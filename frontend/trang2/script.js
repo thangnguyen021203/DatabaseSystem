@@ -68,5 +68,10 @@ function admin() {
   $(".admin").show();
 }
 
+$(document).ready(function() {
+  turnOffCreateForm();
+  turnOffModifyForm();
+});
+
 
 
