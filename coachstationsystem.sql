@@ -89,8 +89,8 @@ CREATE TABLE Trip (
     CoachID INT,
     RouteID INT,
     DriverID INT,
-    Date_ DATE,
-    Time_ TIME,
+    Date DATE,
+    Time TIME,
     FOREIGN KEY (CoachID) REFERENCES Coach(CoachID),
     FOREIGN KEY (DriverID) REFERENCES CoachEmployee(CoachStaffId)
 );
@@ -427,7 +427,7 @@ VALUES
 (5, 4);
 
 -- Thêm dữ liệu vào bảng Trip
-INSERT INTO Trip (LimitOfSeat, NumberOfReservedSeat, CoachID, RouteID, DriverID, Date_, Time_)
+INSERT INTO Trip (LimitOfSeat, NumberOfReservedSeat, CoachID, RouteID, DriverID, Date, Time)
 VALUES
 (50, 30, 1, 1, 1, '2023-01-15', '08:00:00'),
 (40, 20, 2, 2, 2, '2023-02-20', '09:30:00'),
@@ -437,4 +437,37 @@ VALUES
 
 -- Kích hoạt lại ràng buộc sau khi thêm dữ liệu
 SET foreign_key_checks = 1;
+
+
+-- -- Tạo thủ tục tìm kiếm chuyến đi
+-- DELIMITER $$
+-- CREATE PROCEDURE information_trip(
+--     IN start_location VARCHAR(255),
+--     IN end_location VARCHAR(255),
+--     IN start_date DATE,
+--     IN start_time TIME,
+--     IN end_date DATE,
+--     IN end_time TIME,
+
+-- )
+-- BEGIN
+--     WITH route_matching AS (
+--         SELECT DISTINCT R.RouteID, R.Cost
+--         FROM Route R
+--         INNER JOIN RouteStop RS ON R.RouteID = RS.RouteID
+--         INNER JOIN District A ON R.StartDistrictID = A.DistrictID
+--         INNER JOIN District B ON R.EndDistrictID = B.DistrictID
+--         INNER JOIN District C ON RS.StopDistrictID = C.DistrictID
+--         WHERE A.DistrictName = start_param
+--         AND (B.DistrictName = end_param OR C.DistrictName = end_param)
+--     )
+--     SELECT CoaC.CoachCompanyName, C.CoachType, T.Time, RM.Cost
+--     FROM CoachCompany CoaC
+--     INNER JOIN Coach C ON CoaC.CoachCompanyID = C.CoachCompanyID
+--     INNER JOIN Trip T ON C.CoachID = T.CoachID
+--     INNER JOIN route_matching RM ON T.RouteID = RM.RouteID
+--     WHERE T.LimitOfSeat > T.NumberOfReservedSeat
+--     ORDER BY RM.Cost;
+-- END $$
+-- DELIMITER ;
 
