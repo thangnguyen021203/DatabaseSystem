@@ -439,35 +439,93 @@ VALUES
 SET foreign_key_checks = 1;
 
 
--- -- Tạo thủ tục tìm kiếm chuyến đi
--- DELIMITER $$
--- CREATE PROCEDURE information_trip(
---     IN start_location VARCHAR(255),
---     IN end_location VARCHAR(255),
---     IN start_date DATE,
---     IN start_time TIME,
---     IN end_date DATE,
---     IN end_time TIME,
+-- Tạo thủ tục tìm kiếm chuyến đi
+DROP PROCEDURE IF EXISTS information_trip; -- Xóa procedure information_trip nếu tồn tại
 
--- )
--- BEGIN
---     WITH route_matching AS (
---         SELECT DISTINCT R.RouteID, R.Cost
---         FROM Route R
---         INNER JOIN RouteStop RS ON R.RouteID = RS.RouteID
---         INNER JOIN District A ON R.StartDistrictID = A.DistrictID
---         INNER JOIN District B ON R.EndDistrictID = B.DistrictID
---         INNER JOIN District C ON RS.StopDistrictID = C.DistrictID
---         WHERE A.DistrictName = start_param
---         AND (B.DistrictName = end_param OR C.DistrictName = end_param)
---     )
---     SELECT CoaC.CoachCompanyName, C.CoachType, T.Time, RM.Cost
---     FROM CoachCompany CoaC
---     INNER JOIN Coach C ON CoaC.CoachCompanyID = C.CoachCompanyID
---     INNER JOIN Trip T ON C.CoachID = T.CoachID
---     INNER JOIN route_matching RM ON T.RouteID = RM.RouteID
---     WHERE T.LimitOfSeat > T.NumberOfReservedSeat
---     ORDER BY RM.Cost;
--- END $$
--- DELIMITER ;
+DELIMITER $$
 
+CREATE PROCEDURE information_trip(
+    IN start_district VARCHAR(255),
+    IN start_province VARCHAR(255),
+    IN end_district VARCHAR(255),
+    IN end_province VARCHAR(255),
+    IN start_date DATE,
+    IN start_time TIME,
+    IN end_date DATE,
+    IN end_time TIME,
+    IN company_name VARCHAR(255),
+    IN coach_type VARCHAR(255),
+    IN arrangeName VARCHAR(255)
+)
+BEGIN
+    WITH route_matching AS (
+        SELECT DISTINCT R.RouteID, RS.Cost
+        FROM route R
+        INNER JOIN routestop RS ON R.RouteID = RS.RouteID
+        INNER JOIN district D1 ON R.StartDistrictID = D1.DistrictID
+        INNER JOIN province_city P1 ON D1.ProvinceID = P1.ProvinceID
+        INNER JOIN district D2 ON R.EndDistrictID = D2.DistrictID
+        INNER JOIN province_city P2 ON D2.ProvinceID = P2.ProvinceID
+        INNER JOIN district D3 ON RS.StopDistrictID = D3.DistrictID
+        INNER JOIN province_city P3 ON D3.DistrictID = P3.ProvinceID
+        WHERE D1.DistrictName = start_district AND P1.ProvinceCityName = start_province
+            AND ((D2.DistrictName = end_district AND P2.ProvinceCityName = end_province) OR (D3.DistrictName = end_district AND P3.ProvinceCityName = end_province))
+    ),
+    trip_matching AS (
+        SELECT DISTINCT T.RouteID, CoC.CoachCompanyName, C.CoachType, T.Time, RM.Cost, (T.LimitOfSeat - T.NumberOfReservedSeat) AS RemainingNoTicket
+        FROM CoachCompany CoC
+        INNER JOIN Coach C ON CoC.CoachCompanyID = C.CoachCompanyID
+        INNER JOIN Trip T ON C.CoachID = T.CoachID
+        INNER JOIN route_matching RM ON T.RouteID = RM.RouteID
+        WHERE T.LimitOfSeat > T.NumberOfReservedSeat
+            AND (company_name IS NULL OR CoC.CoachCompanyName = company_name)
+            AND (coach_type IS NULL OR C.CoachType = coach_type)
+    )
+
+    SELECT *
+    FROM trip_matching
+    ORDER BY 
+        CASE 
+            WHEN arrangeName = 'name' THEN CoachCompanyName
+            WHEN arrangeName = 'time' THEN Time
+            WHEN arrangeName = 'cost' THEN Cost
+            ELSE NULL
+        END;
+END $$
+
+DELIMITER ;
+
+-- Tạo thủ tục tìm tuyến đường có nhiều hành khách đi nhất
+DROP PROCEDURE IF EXISTS max_ticket_of_route; -- Xóa procedure max_ticket_of_route nếu tồn tại
+DELIMITER $$
+
+CREATE PROCEDURE max_ticket_of_route(
+    IN start_day DATE,
+    IN end_day DATE
+)
+BEGIN
+    -- Create a temporary table to store the count of tickets
+    CREATE TEMPORARY TABLE IF NOT EXISTS count_ticket AS (
+        SELECT R.RouteID, COUNT(Ti.TicketID) AS no_ticket
+        FROM trip T
+        INNER JOIN route R ON R.RouteID = T.RouteID
+        INNER JOIN ticket Ti ON T.TripID = Ti.TripID
+        WHERE Ti.PassengerSSN IS NOT NULL AND T.Date BETWEEN start_day AND end_day
+        GROUP BY R.RouteID
+    );
+
+    -- Select the route with the maximum ticket count
+    SELECT R.RouteID, COUNT(Ti.TicketID) AS max_ticketcount
+    FROM trip T
+    INNER JOIN route R ON R.RouteID = T.RouteID
+    INNER JOIN ticket Ti ON T.TripID = Ti.TripID
+    WHERE Ti.PassengerSSN IS NOT NULL AND T.Date BETWEEN start_day AND end_day
+    GROUP BY R.RouteID
+    HAVING COUNT(Ti.TicketID) = (SELECT MAX(no_ticket) FROM count_ticket)
+    ORDER BY R.RouteID;
+
+    -- Drop the temporary table
+    DROP TEMPORARY TABLE IF EXISTS count_ticket;
+END $$
+
+DELIMITER ;
