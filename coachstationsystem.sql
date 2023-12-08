@@ -1,447 +1,843 @@
+-- MariaDB dump 10.19  Distrib 10.4.32-MariaDB, for Win64 (AMD64)
+--
+-- Host: 127.0.0.1    Database: coachstationsystem
+-- ------------------------------------------------------
+-- Server version	10.4.32-MariaDB
+
+/*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
+/*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
+/*!40101 SET @OLD_COLLATION_CONNECTION=@@COLLATION_CONNECTION */;
+/*!40101 SET NAMES utf8 */;
+/*!40103 SET @OLD_TIME_ZONE=@@TIME_ZONE */;
+/*!40103 SET TIME_ZONE='+00:00' */;
+/*!40014 SET @OLD_UNIQUE_CHECKS=@@UNIQUE_CHECKS, UNIQUE_CHECKS=0 */;
+/*!40014 SET @OLD_FOREIGN_KEY_CHECKS=@@FOREIGN_KEY_CHECKS, FOREIGN_KEY_CHECKS=0 */;
+/*!40101 SET @OLD_SQL_MODE=@@SQL_MODE, SQL_MODE='NO_AUTO_VALUE_ON_ZERO' */;
+/*!40111 SET @OLD_SQL_NOTES=@@SQL_NOTES, SQL_NOTES=0 */;
+
+--
+-- Table structure for table `account`
+--
 -- Kiểm tra nếu database tồn tại thì xóa
-DROP DATABASE IF EXISTS CoachStationSystem;
+DROP DATABASE IF EXISTS `CoachStationSystem`;
 
 -- Tạo mới database
-CREATE DATABASE CoachStationSystem
+CREATE DATABASE `CoachStationSystem`
 DEFAULT CHARACTER SET utf8mb4
 DEFAULT COLLATE utf8mb4_unicode_ci;
-
 -- Sử dụng database vừa tạo
-USE CoachStationSystem;
+USE `CoachStationSystem`;
 
--- Tạo bảng CoachCompany
-CREATE TABLE CoachCompany (
-    CoachCompanyID INT AUTO_INCREMENT PRIMARY KEY,
-    DateOfContractRegistration DATE,
-    EndDateOfContract DATE,
-    CoachCompanyName VARCHAR(255),
-    Status VARCHAR(255) CHECK (Status IN ('Action', 'Not Action'))
-);
+DROP TABLE IF EXISTS `account`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `account` (
+  `AccountID` int(11) NOT NULL AUTO_INCREMENT,
+  `UserName` varchar(50) DEFAULT NULL,
+  `Password` varchar(50) DEFAULT NULL,
+  `AccountStatus` varchar(20) DEFAULT NULL,
+  `AccountType` varchar(20) DEFAULT NULL CHECK (`AccountType` in ('CoachEmployee','Passenger','TerminalEmployee')),
+  PRIMARY KEY (`AccountID`)
+) ENGINE=InnoDB AUTO_INCREMENT=41 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
 
--- Tạo bảng PhoneNumberCoachCompany
-CREATE TABLE PhoneNumberCoachCompany (
-    PhoneNumber VARCHAR(20) NOT NULL,
-    CoachCompanyID INT NOT NULL,
-    PRIMARY KEY (PhoneNumber, CoachCompanyID),
-    FOREIGN KEY (CoachCompanyID) REFERENCES CoachCompany(CoachCompanyID)
-);
+--
+-- Dumping data for table `account`
+--
 
--- Tạo bảng Coach
-CREATE TABLE Coach (
-    CoachID INT AUTO_INCREMENT PRIMARY KEY,
-    Status VARCHAR(255) CHECK (Status IN ('At station', 'In transit')),
-    CoachType VARCHAR(50),
-    LicensePlates VARCHAR(20),
-    NumberOfSeat INT,
-    CoachCompanyID INT,
-    FOREIGN KEY (CoachCompanyID) REFERENCES CoachCompany(CoachCompanyID)
-);
+LOCK TABLES `account` WRITE;
+/*!40000 ALTER TABLE `account` DISABLE KEYS */;
+INSERT INTO `account` VALUES (1,'driver1','pass123','Active','CoachEmployee'),(2,'driver2','pass456','Active','CoachEmployee'),(3,'driver3','pass789','Active','CoachEmployee'),(4,'driver4','passpass','Active','CoachEmployee'),(5,'driver5','wordword','Active','CoachEmployee'),(6,'driver6','secure123','Active','CoachEmployee'),(7,'driver7','admin123','Active','CoachEmployee'),(8,'driver8','clerkpass','Active','CoachEmployee'),(9,'driver9','clerkword','Active','CoachEmployee'),(10,'driver10','admin456','Active','CoachEmployee'),(11,'supervisor1','clerksecure','Active','TerminalEmployee'),(12,'supervisor2','clerk567','Active','TerminalEmployee'),(13,'supervisor3','admin789','Active','TerminalEmployee'),(14,'supervisor4','clerk789','Active','TerminalEmployee'),(15,'supervisor5','clerkadmin','Active','TerminalEmployee'),(16,'supervisor6','hihi','Active','TerminalEmployee'),(17,'supervisor7','haha','Active','TerminalEmployee'),(18,'supervisor8','hoho','Active','TerminalEmployee'),(19,'supervisor9','hehe','Active','TerminalEmployee'),(20,'supervisor10','hjhj','Active','TerminalEmployee'),(21,'clerk1','jeje','Active','TerminalEmployee'),(22,'clerk2','gege','Active','TerminalEmployee'),(23,'clerk3','aloalo','Active','TerminalEmployee'),(24,'clerk4','hello','Active','TerminalEmployee'),(25,'clerk5','chohoi','Active','TerminalEmployee'),(26,'clerk6','aivay','Active','TerminalEmployee'),(27,'clerk7','tuine','Active','TerminalEmployee'),(28,'clerk8','chuai','Active','TerminalEmployee'),(29,'clerk9','1122','Active','TerminalEmployee'),(30,'clerk10','3344','Active','TerminalEmployee'),(31,'passenger1','5566','Active','Passenger'),(32,'passenger2','7788','Active','Passenger'),(33,'passenger3','8899','Active','Passenger'),(34,'passenger4','dtkdtk','Active','Passenger'),(35,'passenger5','tbptbp','Active','Passenger'),(36,'passenger6','nqtnqt','Active','Passenger'),(37,'passenger7','dqtdqt','Active','Passenger'),(38,'passenger8','ttdttd','Active','Passenger'),(39,'passenger9','lplp1','Active','Passenger'),(40,'passenger10','lplp2','Active','Passenger');
+/*!40000 ALTER TABLE `account` ENABLE KEYS */;
+UNLOCK TABLES;
 
--- Tạo bảng CoachEmployee
-CREATE TABLE CoachEmployee (
-    CoachStaffId INT AUTO_INCREMENT PRIMARY KEY,
-    SSN VARCHAR(20),
-    FName VARCHAR(50),
-    Lname VARCHAR(50),
-    Birthday DATE,
-    Gender CHAR(1),
-    CoachEmployeeType VARCHAR(50) CHECK (CoachEmployeeType IN ('Driver', 'Assistant')),
-    LicenseNumber VARCHAR(50),
-    LicenseType VARCHAR(50),
-    CoachCompanyId INT,
-    AccountID INT,
-    FOREIGN KEY (CoachCompanyId) REFERENCES CoachCompany(CoachCompanyID)
-);
+--
+-- Table structure for table `addresscoachemployee`
+--
 
--- Tạo bảng PhoneNumberCoachEmployee
-CREATE TABLE PhoneNumberCoachEmployee (
-    CoachEmployeeID INT NOT NULL,
-    PhoneNumber VARCHAR(20) NOT NULL,
-    PRIMARY KEY (CoachEmployeeID, PhoneNumber),
-    FOREIGN KEY (CoachEmployeeID) REFERENCES CoachEmployee(CoachStaffId)
-);
+DROP TABLE IF EXISTS `addresscoachemployee`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `addresscoachemployee` (
+  `CoachEmployeeID` int(11) NOT NULL,
+  `HouseNumber` varchar(50) NOT NULL,
+  `Street` varchar(100) NOT NULL,
+  `DistrictCity` varchar(100) NOT NULL,
+  `ProvinceCity` varchar(100) NOT NULL,
+  PRIMARY KEY (`CoachEmployeeID`,`HouseNumber`,`Street`,`DistrictCity`,`ProvinceCity`),
+  CONSTRAINT `addresscoachemployee_ibfk_1` FOREIGN KEY (`CoachEmployeeID`) REFERENCES `coachemployee` (`CoachStaffId`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
 
--- Tạo bảng EmailCoachEmployee
-CREATE TABLE EmailCoachEmployee (
-    CoachEmployeeID INT NOT NULL,
-    Email VARCHAR(100) NOT NULL,
-    PRIMARY KEY (CoachEmployeeID, Email),
-    FOREIGN KEY (CoachEmployeeID) REFERENCES CoachEmployee(CoachStaffId)
-);
+--
+-- Dumping data for table `addresscoachemployee`
+--
 
--- Tạo bảng AddressCoachEmployee
-CREATE TABLE AddressCoachEmployee (
-    CoachEmployeeID INT NOT NULL,
-    HouseNumber VARCHAR(50) NOT NULL,
-    Street VARCHAR(100) NOT NULL,
-    DistrictCity VARCHAR(100) NOT NULL,
-    ProvinceCity VARCHAR(100) NOT NULL,
-    PRIMARY KEY (CoachEmployeeID, HouseNumber, Street, DistrictCity, ProvinceCity),
-    FOREIGN KEY (CoachEmployeeID) REFERENCES CoachEmployee(CoachStaffId)
-);
+LOCK TABLES `addresscoachemployee` WRITE;
+/*!40000 ALTER TABLE `addresscoachemployee` DISABLE KEYS */;
+INSERT INTO `addresscoachemployee` VALUES (1,'772/49','Đường 21 tháng 9','Quận Gia Lâm','Hà Nội'),(2,'A8','Đường TMT2A','Quận 12','TPHCM'),(3,'41 ','Đường Hồ Xuân Hương','Quận 1','TPHCM'),(4,'222','Đường Lê Văn Việt','Quận 9','TPHCM'),(5,'21A','Đường Lý Thánh Tông','Quận Ba Đình','Hà Nội'),(6,'915B/20','Đường Võ Văn Kiệt','Quận 5','TPHCM'),(7,'179 ','Đường Lê Quang Đạo','Quận Ngô Quyền ','Hải Phòng'),(8,'25','Đường Lạc Long Quân','Quận Tây Hồ','Hà Nội'),(9,'90 ','Đường Hồng Thái','Quận 2','Đà nẵng'),(10,'453','Đường Hoàng Văn Thụ','Quận Tân Phú','TPHCM');
+/*!40000 ALTER TABLE `addresscoachemployee` ENABLE KEYS */;
+UNLOCK TABLES;
 
--- Tạo bảng Trip
-CREATE TABLE Trip (
-    TripID INT AUTO_INCREMENT PRIMARY KEY,
-    LimitOfSeat INT,
-    NumberOfReservedSeat INT,
-    NumberOfNoBookSeat INT,
-    CoachID INT,
-    RouteID INT,
-    DriverID INT,
-    Date DATE,
-    Time TIME,
-    FOREIGN KEY (CoachID) REFERENCES Coach(CoachID),
-    FOREIGN KEY (DriverID) REFERENCES CoachEmployee(CoachStaffId)
-);
+--
+-- Table structure for table `addresspassenger`
+--
 
--- Tạo bảng Assist
-CREATE TABLE Assist (
-    TripID INT NOT NULL,
-    AssistantID INT NOT NULL,
-    PRIMARY KEY (TripID, AssistantID),
-    FOREIGN KEY (TripID) REFERENCES Trip(TripID),
-    FOREIGN KEY (AssistantID) REFERENCES CoachEmployee(CoachStaffId)
-);
+DROP TABLE IF EXISTS `addresspassenger`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `addresspassenger` (
+  `HouseNumber` varchar(50) NOT NULL,
+  `Street` varchar(100) NOT NULL,
+  `District_City` varchar(100) NOT NULL,
+  `Province_City` varchar(100) NOT NULL,
+  `PassengerSSN` varchar(20) NOT NULL,
+  PRIMARY KEY (`HouseNumber`,`Street`,`District_City`,`Province_City`,`PassengerSSN`),
+  KEY `PassengerSSN` (`PassengerSSN`),
+  CONSTRAINT `addresspassenger_ibfk_1` FOREIGN KEY (`PassengerSSN`) REFERENCES `passenger` (`SSN`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
 
--- Tạo bảng Route
-CREATE TABLE Route (
-    RouteID INT AUTO_INCREMENT PRIMARY KEY,
-    StartDistrictID INT,
-    EndDistrictID INT,
-    CoachCompanyID INT,
-    FOREIGN KEY (CoachCompanyID) REFERENCES CoachCompany(CoachCompanyID)
-);
+--
+-- Dumping data for table `addresspassenger`
+--
 
--- Tạo bảng RouteStop
-CREATE TABLE RouteStop (
-    RouteStopID INT AUTO_INCREMENT PRIMARY KEY,
-    RouteID INT,
-    Cost DECIMAL(10, 2),
-    StopDistrictID INT,
-    FOREIGN KEY (RouteID) REFERENCES Route(RouteID)
-);
+LOCK TABLES `addresspassenger` WRITE;
+/*!40000 ALTER TABLE `addresspassenger` DISABLE KEYS */;
+INSERT INTO `addresspassenger` VALUES ('122','Đường Cao Thắng','Quận Hải Châu','Đà Nẵng','666666666'),('191','Đường Phan Châu Chinh ','Quận 1 ','TPCHM','999999999'),('222','Đường Ngô Quyền','Quận Bình Thành','TPHCM','000000000'),('437','Đường Nguyễn Xuyển','Quận 9','TPCHM','333333333'),('556','Đường Hoàng Văn Thụ','Đường Hoàng Văn Thụ','TPCHM','111111111'),('654','Đường Trần Văn Hưởng','Quận 2','TPCHM','555555555'),('69','Đường Trần Duy Hưng','Quận Hà Đông ','Hà Nội','888888888'),('721','Đường Bùi Thị Xuân','Quận Tây Hồ','Hà Nội','444444444'),('90','Đường Lý Tự Trọng','Quận Thanh Khê ','Hải Phòng','777777777'),('990','Đường Lạc Long Quân','Quận Đống Đa','Hà Nội','222222222');
+/*!40000 ALTER TABLE `addresspassenger` ENABLE KEYS */;
+UNLOCK TABLES;
 
--- Tạo bảng Province_City
-CREATE TABLE Province_City (
-    ProvinceID INT AUTO_INCREMENT PRIMARY KEY,
-    ProvinceCityName VARCHAR(100)
-);
+--
+-- Table structure for table `addressterminalemployee`
+--
 
--- Tạo bảng District
-CREATE TABLE District (
-    DistrictID INT AUTO_INCREMENT PRIMARY KEY,
-    DistrictName VARCHAR(100),
-    ProvinceID INT,
-    FOREIGN KEY (ProvinceID) REFERENCES Province_City(ProvinceID)
-);
+DROP TABLE IF EXISTS `addressterminalemployee`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `addressterminalemployee` (
+  `HouseNumber` varchar(50) NOT NULL,
+  `Street` varchar(100) NOT NULL,
+  `District_City` varchar(100) NOT NULL,
+  `Province_City` varchar(100) NOT NULL,
+  `TerminalEmployeeID` int(11) NOT NULL,
+  PRIMARY KEY (`HouseNumber`,`Street`,`District_City`,`Province_City`,`TerminalEmployeeID`),
+  KEY `TerminalEmployeeID` (`TerminalEmployeeID`),
+  CONSTRAINT `addressterminalemployee_ibfk_1` FOREIGN KEY (`TerminalEmployeeID`) REFERENCES `terminalemployee` (`TerminalEmployeeID`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
 
--- Tạo bảng Ticket
-CREATE TABLE Ticket (
-    TicketID INT AUTO_INCREMENT PRIMARY KEY,
-    SeatNumber INT,
-    AccountID INT,
-    InvoiceID INT,
-    PassengerSSN VARCHAR(20),
-    TripID INT,
-    RouteStopID INT,
-    RouteID INT,
-    FOREIGN KEY (TripID) REFERENCES Trip(TripID),
-    FOREIGN KEY (RouteStopID) REFERENCES RouteStop(RouteStopID),
-    FOREIGN KEY (RouteID) REFERENCES Route(RouteID)
-);
+--
+-- Dumping data for table `addressterminalemployee`
+--
 
--- Tạo bảng Passenger
-CREATE TABLE Passenger (
-    SSN VARCHAR(20) NOT NULL PRIMARY KEY,
-    Name VARCHAR(100),
-    BirthDay DATE,
-    Gender CHAR(1),
-    AccountID INT
-);
+LOCK TABLES `addressterminalemployee` WRITE;
+/*!40000 ALTER TABLE `addressterminalemployee` DISABLE KEYS */;
+INSERT INTO `addressterminalemployee` VALUES ('121','Đường Trường Chinh','Quận Kiến An','Hải Phòng',4),('222','Đường Ngô Gia Tự ','Quận 7','TPCHM',9),('294','Đường Hoàng Văn Thụ','Quận 3 ','TPCHM',10),('311','Đường Võ Văn Kiệt','Quận 5','TPHCM',7),('328','Đường Hoài Thanh','Quận Ngũ Hành Sơn','Hải Phòng',6),('35','Đường Đại An','Quận Hà Đông','Hà Nội',1),('602','Đường Điện Biên Phủ','Quận 1','TPCHM',3),('65','Đường Sư Vạn Hạnh','Quận 3','TPCHM',2),('949','Đường Võ Thị Sáu','Quận Đống Đa','Hà Nội',5);
+/*!40000 ALTER TABLE `addressterminalemployee` ENABLE KEYS */;
+UNLOCK TABLES;
 
--- Tạo bảng PhoneNumberPassenger
-CREATE TABLE PhoneNumberPassenger (
-    PhoneNumber VARCHAR(20) NOT NULL,
-    PassengerSSN VARCHAR(20) NOT NULL,
-    PRIMARY KEY (PhoneNumber, PassengerSSN),
-    FOREIGN KEY (PassengerSSN) REFERENCES Passenger(SSN)
-);
+--
+-- Table structure for table `assist`
+--
 
--- Tạo bảng EmailPassenger
-CREATE TABLE EmailPassenger (
-    Email VARCHAR(100) NOT NULL,
-    PassengerSSN VARCHAR(20) NOT NULL,
-    PRIMARY KEY (Email, PassengerSSN),
-    FOREIGN KEY (PassengerSSN) REFERENCES Passenger(SSN)
-);
+DROP TABLE IF EXISTS `assist`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `assist` (
+  `TripID` int(11) NOT NULL,
+  `AssistantID` int(11) NOT NULL,
+  PRIMARY KEY (`TripID`,`AssistantID`),
+  KEY `AssistantID` (`AssistantID`),
+  CONSTRAINT `assist_ibfk_1` FOREIGN KEY (`TripID`) REFERENCES `trip` (`TripID`),
+  CONSTRAINT `assist_ibfk_2` FOREIGN KEY (`AssistantID`) REFERENCES `coachemployee` (`CoachStaffId`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
 
--- Tạo bảng AddressPassenger
-CREATE TABLE AddressPassenger (
-    HouseNumber VARCHAR(50) NOT NULL,
-    Street VARCHAR(100) NOT NULL,
-    District_City VARCHAR(100) NOT NULL,
-    Province_City VARCHAR(100) NOT NULL,
-    PassengerSSN VARCHAR(20) NOT NULL,
-    PRIMARY KEY (HouseNumber, Street, District_City, Province_City, PassengerSSN),
-    FOREIGN KEY (PassengerSSN) REFERENCES Passenger(SSN)
-);
+--
+-- Dumping data for table `assist`
+--
 
--- Tạo bảng Invoice
-CREATE TABLE Invoice (
-    InvoiceID INT AUTO_INCREMENT PRIMARY KEY,
-    TaxCode VARCHAR(50),
-    AccountID INT,
-    PassengerSSN VARCHAR(20),
-    Date DATE,
-    Time TIME,
-    FOREIGN KEY (PassengerSSN) REFERENCES Passenger(SSN)
-);
+LOCK TABLES `assist` WRITE;
+/*!40000 ALTER TABLE `assist` DISABLE KEYS */;
+INSERT INTO `assist` VALUES (1,6),(2,7),(3,8),(4,9),(5,10);
+/*!40000 ALTER TABLE `assist` ENABLE KEYS */;
+UNLOCK TABLES;
 
--- Tạo bảng TerminalEmployee
-CREATE TABLE TerminalEmployee (
-    TerminalEmployeeID INT AUTO_INCREMENT PRIMARY KEY,
-    SSN VARCHAR(20),
-    FName VARCHAR(50),
-    LName VARCHAR(50),
-    BirthDay DATE,
-    Gender CHAR(1),
-    TerminalEmployeeType VARCHAR(50),
-    DepartmentID INT,
-    AccountID INT,
-    SupervisorID INT,
-    FOREIGN KEY (SupervisorID) REFERENCES TerminalEmployee(TerminalEmployeeID)
-);
+--
+-- Table structure for table `coach`
+--
 
--- Tạo bảng Department
-CREATE TABLE Department (
-    DepartmentID INT AUTO_INCREMENT PRIMARY KEY,
-    DepartmentName VARCHAR(100),
-    ManageEmployeeID INT,
-    FOREIGN KEY (ManageEmployeeID) REFERENCES TerminalEmployee(TerminalEmployeeID)
-);
+DROP TABLE IF EXISTS `coach`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `coach` (
+  `CoachID` int(11) NOT NULL AUTO_INCREMENT,
+  `Status` varchar(255) DEFAULT NULL CHECK (`Status` in ('At station','In transit')),
+  `CoachType` varchar(50) DEFAULT NULL,
+  `LicensePlates` varchar(20) DEFAULT NULL,
+  `NumberOfSeat` int(11) DEFAULT NULL,
+  `CoachCompanyID` int(11) DEFAULT NULL,
+  PRIMARY KEY (`CoachID`),
+  KEY `CoachCompanyID` (`CoachCompanyID`),
+  CONSTRAINT `coach_ibfk_1` FOREIGN KEY (`CoachCompanyID`) REFERENCES `coachcompany` (`CoachCompanyID`)
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
 
--- Tạo bảng PhoneNumberTerminalEmployee
-CREATE TABLE PhoneNumberTerminalEmployee (
-    PhoneNumber VARCHAR(20) NOT NULL,
-    TerminalEmployeeID INT NOT NULL,
-    PRIMARY KEY (PhoneNumber, TerminalEmployeeID),
-    FOREIGN KEY (TerminalEmployeeID) REFERENCES TerminalEmployee(TerminalEmployeeID)
-);
+--
+-- Dumping data for table `coach`
+--
 
--- Tạo bảng EmailTerminalEmployee
-CREATE TABLE EmailTerminalEmployee (
-    Email VARCHAR(100) NOT NULL,
-    TerminalEmployeeID INT NOT NULL,
-    PRIMARY KEY (Email, TerminalEmployeeID),
-    FOREIGN KEY (TerminalEmployeeID) REFERENCES TerminalEmployee(TerminalEmployeeID)
-);
+LOCK TABLES `coach` WRITE;
+/*!40000 ALTER TABLE `coach` DISABLE KEYS */;
+INSERT INTO `coach` (`Status`, `CoachType`, `LicensePlates`, `NumberOfSeat`, `CoachCompanyID`) VALUES ('At station','Limousine','51A-12345',35,1),('In transit','Standard','36B-67890',50,2),('At station','Luxury','92C-54321',35,3),('In transit','Limousine','34D-98765',35,4),('At station','Standard','29E-24680',50,5),('At station','Limousine','29E-24680',35,6),('At station','Luxury','39E-34325',35,7),('In transit','Limousine','81E-65766',35,8),('At station','Standard','39E-28786',50,9),('In transit','Luxury','19E-34256',35,10),('In transit','Standard','91E-97767',50,11),('In transit', 'Luxury', '12F-87654', 35, 1),('At station', 'Standard', '45G-54321', 50, 2),
+('In transit', 'Luxury', '78H-12345', 35, 3),
+('At station', 'Limousine', '67I-98765', 35, 4),
+('In transit', 'Standard', '90J-23456', 50, 5),
+('At station', 'Limousine', '23K-87654', 35, 6),
+('In transit', 'Luxury', '56L-34567', 35, 7),
+('At station', 'Standard', '89M-87654', 50, 8),
+('In transit', 'Limousine', '01N-23456', 35, 9),
+('At station', 'Standard', '23O-87654', 50, 10),
+('In transit', 'Luxury', '45P-34567', 35, 11);
+/*!40000 ALTER TABLE `coach` ENABLE KEYS */;
+UNLOCK TABLES;
 
--- Tạo bảng AddressTerminalEmployee
-CREATE TABLE AddressTerminalEmployee (
-    HouseNumber VARCHAR(50) NOT NULL,
-    Street VARCHAR(100) NOT NULL,
-    District_City VARCHAR(100) NOT NULL,
-    Province_City VARCHAR(100) NOT NULL,
-    TerminalEmployeeID INT NOT NULL,
-    PRIMARY KEY (HouseNumber, Street, District_City, Province_City, TerminalEmployeeID),
-    FOREIGN KEY (TerminalEmployeeID) REFERENCES TerminalEmployee(TerminalEmployeeID)
-);
+--
+-- Table structure for table `coachcompany`
+--
 
--- Tạo bảng Account
-CREATE TABLE Account (
-    AccountID INT AUTO_INCREMENT PRIMARY KEY,
-    UserName VARCHAR(50),
-    Password VARCHAR(50),
-    AccountStatus VARCHAR(20),
-    AccountType VARCHAR(20) CHECK (AccountType IN ('CoachEmployee', 'Passenger', 'TerminalEmployee'))
-);
+DROP TABLE IF EXISTS `coachcompany`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `coachcompany` (
+  `CoachCompanyID` int(11) NOT NULL AUTO_INCREMENT,
+  `DateOfContractRegistration` date DEFAULT NULL,
+  `EndDateOfContract` date DEFAULT NULL,
+  `CoachCompanyName` varchar(255) DEFAULT NULL,
+  `Status` varchar(255) DEFAULT NULL CHECK (`Status` in ('Action','Not Action')),
+  PRIMARY KEY (`CoachCompanyID`)
+) ENGINE=InnoDB AUTO_INCREMENT=12 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
 
--- Chỉnh sửa ràng buộc
-ALTER TABLE CoachEmployee
-ADD CONSTRAINT FK_AccountID FOREIGN KEY (AccountID) REFERENCES Account(AccountID);
+--
+-- Dumping data for table `coachcompany`
+--
 
-ALTER TABLE Trip
-ADD CONSTRAINT FK_RouteID FOREIGN KEY (RouteID) REFERENCES Route(RouteID);
+LOCK TABLES `coachcompany` WRITE;
+/*!40000 ALTER TABLE `coachcompany` DISABLE KEYS */;
+INSERT INTO `coachcompany` (`CoachCompanyID`, `DateOfContractRegistration`, `EndDateOfContract`, `CoachCompanyName`, `Status`) VALUES
+(1, '2022-01-01', '2026-12-31', 'Phương Trang', 'Action'),
+(2, '2022-02-01', '2024-11-30', 'Hoàng Long', 'Action'),
+(3, '2022-03-01', '2022-10-31', 'Mai Linh', 'Not Action'),
+(4, '2022-04-01', '2025-09-30', 'Thành Bưởi', 'Action'),
+(5, '2022-05-01', '2022-08-31', 'Minh Thành Phát', 'Not Action'),
+(6, '2022-11-18', '2025-11-18', 'Văn Minh', 'Action'),
+(7, '2023-01-01', '2026-01-01', 'Kumho Samco', 'Action'),
+(8, '2023-12-24', '2025-12-24', 'Kim Hoàng', 'Action'),
+(9, '2023-11-12', '2025-11-12', 'Tuấn Hưng', 'Action'),
+(10, '2023-08-09', '2025-08-09', 'Hùng Cường', 'Action'),
+(11, '2024-01-01', '2026-01-01', 'Hoàng Nga', 'Action');
+/*!40000 ALTER TABLE `coachcompany` ENABLE KEYS */;
+UNLOCK TABLES;
 
-ALTER TABLE RouteStop
-ADD CONSTRAINT FK_StopDistrictID FOREIGN KEY (StopDistrictID) REFERENCES District(DistrictID);
+--
+-- Table structure for table `coachemployee`
+--
 
-ALTER TABLE District
-ADD CONSTRAINT FK_ProvinceID FOREIGN KEY (ProvinceID) REFERENCES Province_City(ProvinceID);
+DROP TABLE IF EXISTS `coachemployee`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `coachemployee` (
+  `CoachStaffId` int(11) NOT NULL AUTO_INCREMENT,
+  `SSN` varchar(20) DEFAULT NULL,
+  `FName` varchar(50) DEFAULT NULL,
+  `Lname` varchar(50) DEFAULT NULL,
+  `Birthday` date DEFAULT NULL,
+  `Gender` char(1) DEFAULT NULL,
+  `CoachEmployeeType` varchar(50) DEFAULT NULL CHECK (`CoachEmployeeType` in ('Driver','Assistant')),
+  `LicenseNumber` varchar(50) DEFAULT NULL,
+  `LicenseType` varchar(50) DEFAULT NULL,
+  `CoachCompanyId` int(11) DEFAULT NULL,
+  `AccountID` int(11) DEFAULT NULL,
+  PRIMARY KEY (`CoachStaffId`),
+  KEY `CoachCompanyId` (`CoachCompanyId`),
+  KEY `FK_AccountID` (`AccountID`),
+  CONSTRAINT `FK_AccountID` FOREIGN KEY (`AccountID`) REFERENCES `account` (`AccountID`),
+  CONSTRAINT `coachemployee_ibfk_1` FOREIGN KEY (`CoachCompanyId`) REFERENCES `coachcompany` (`CoachCompanyID`)
+) ENGINE=InnoDB AUTO_INCREMENT=11 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
 
-ALTER TABLE Ticket
-ADD CONSTRAINT FK_Ticket_AccountID FOREIGN KEY (AccountID) REFERENCES Account(AccountID);
+--
+-- Dumping data for table `coachemployee`
+--
 
-ALTER TABLE Ticket
-ADD CONSTRAINT FK_Ticket_InvoiceID FOREIGN KEY (InvoiceID) REFERENCES Invoice(InvoiceID);
+LOCK TABLES `coachemployee` WRITE;
+/*!40000 ALTER TABLE `coachemployee` DISABLE KEYS */;
+INSERT INTO `coachemployee` VALUES (1,'123456789','Nguyễn','Văn An','1980-05-15','M','Driver','30A-12345','D1',1,1),(2,'987654321','Trần','Thị Bưởi','1992-10-20','F','Driver','42B-67890','D1',2,2),(3,'456789012','Lê','Quang Cút','1985-03-08','M','Driver','77C-54321','D1',3,3),(4,'321654987','Phạm','Văn Dương','1990-07-25','M','Driver','59D-98765','D1',4,4),(5,'789012345','Đỗ','Thị Én','1988-02-18','F','Driver','72A-24680','D1',5,5),(6,'112233445','Dương ','Trọng Khôi','1995-01-22','M','Assistant','31A-32423','D1',6,6),(7,'223344556','Trần','Bảo Phúc','1994-12-03','M','Assistant','84A-32323','D1',7,7),(8,'334455667','Dương','Thị Phúc ','1996-08-08','F','Assistant','38B-38400','D1',8,8),(9,'445566778','Trần','Tiến Đạt','1993-09-09','M','Assistant','71C-93020','D1',9,9),(10,'556677889','Nguyễn ','Quốc Thắng','1992-05-18','M','Assistant','81-D-3828','D1',10,10);
+/*!40000 ALTER TABLE `coachemployee` ENABLE KEYS */;
+UNLOCK TABLES;
 
-ALTER TABLE Passenger
-ADD CONSTRAINT FK_AccountID_Passenger FOREIGN KEY (AccountID) REFERENCES Account(AccountID);
+--
+-- Table structure for table `department`
+--
 
-ALTER TABLE Invoice
-ADD CONSTRAINT FK_AccountID_Invoice FOREIGN KEY (AccountID) REFERENCES Account(AccountID);
+DROP TABLE IF EXISTS `department`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `department` (
+  `DepartmentID` int(11) NOT NULL AUTO_INCREMENT,
+  `DepartmentName` varchar(100) DEFAULT NULL,
+  `ManageEmployeeID` int(11) DEFAULT NULL,
+  PRIMARY KEY (`DepartmentID`),
+  KEY `ManageEmployeeID` (`ManageEmployeeID`),
+  CONSTRAINT `department_ibfk_1` FOREIGN KEY (`ManageEmployeeID`) REFERENCES `terminalemployee` (`TerminalEmployeeID`)
+) ENGINE=InnoDB AUTO_INCREMENT=8 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
 
-ALTER TABLE TerminalEmployee
-ADD CONSTRAINT FK_AccountID_TerminalEmployee FOREIGN KEY (AccountID) REFERENCES Account(AccountID);
+--
+-- Dumping data for table `department`
+--
 
-ALTER TABLE Ticket
-ADD CONSTRAINT FK_DepartmentID_TerminalEmployee FOREIGN KEY (PassengerSSN) REFERENCES Passenger(SSN);
+LOCK TABLES `department` WRITE;
+/*!40000 ALTER TABLE `department` DISABLE KEYS */;
+INSERT INTO `department` VALUES (1,'Operation',1),(2,'Finance',4),(3,'Human Resources',2),(4,'Distribution',5),(5,'Production',6),(6,'Accounting',9),(7,'Marketing',7);
+/*!40000 ALTER TABLE `department` ENABLE KEYS */;
+UNLOCK TABLES;
 
--- No check constraint
-SET foreign_key_checks = 0;
+--
+-- Table structure for table `district`
+--
 
--- Thêm dữ liệu vào bảng Province_City
-INSERT INTO Province_City (ProvinceCityName)
-VALUES ('Hồ Chí Minh'), ('Hà Nội'), ('Đà Nẵng'), ('Hải Phòng'), ('Cần Thơ'), ('Hải Dương');
+DROP TABLE IF EXISTS `district`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `district` (
+  `DistrictID` int(11) NOT NULL AUTO_INCREMENT,
+  `DistrictName` varchar(100) DEFAULT NULL,
+  `ProvinceID` int(11) DEFAULT NULL,
+  PRIMARY KEY (`DistrictID`),
+  KEY `FK_ProvinceID` (`ProvinceID`),
+  CONSTRAINT `FK_ProvinceID` FOREIGN KEY (`ProvinceID`) REFERENCES `province_city` (`ProvinceID`),
+  CONSTRAINT `district_ibfk_1` FOREIGN KEY (`ProvinceID`) REFERENCES `province_city` (`ProvinceID`)
+) ENGINE=InnoDB AUTO_INCREMENT=15 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
 
--- Thêm dữ liệu vào bảng District
-INSERT INTO District (DistrictName, ProvinceID)
-VALUES 
-    ('Quận 1', 1), ('Quận 2', 1), ('Quận 3', 1), ('Quận 10', 1),
-    ('Quận Hoàn Kiếm', 2), ('Quận Ba Đình', 2),
-    ('Quận Sơn Trà', 3), ('Quận Ngũ Hành Sơn', 3),
-    ('Quận Hải An', 4), ('Quận Lê Chân', 4),
-    ('Quận Ninh Kiều', 5), ('Quận Bình Thủy', 5),
-    ('Quận Hải An', 6), ('Quận Kiến An', 6);
+--
+-- Dumping data for table `district`
+--
 
--- Thêm dữ liệu vào bảng CoachCompany
-INSERT INTO CoachCompany (DateOfContractRegistration, EndDateOfContract, CoachCompanyName, Status)
-VALUES 
-    ('2022-01-01', '2026-12-31', 'Xe Khách ABC', 'Action'),
-    ('2022-02-01', '2024-11-30', 'Xe Khách XYZ', 'Action'),
-    ('2022-03-01', '2022-10-31', 'Xe Khách 123', 'Not Action'),
-    ('2022-04-01', '2025-09-30', 'Xe Khách 456', 'Action'),
-    ('2022-05-01', '2022-08-31', 'Xe Khách UVW', 'Not Action');
+LOCK TABLES `district` WRITE;
+/*!40000 ALTER TABLE `district` DISABLE KEYS */;
+INSERT INTO `district` VALUES (1,'Quận 1',1),(2,'Quận 2',1),(3,'Quận Hoàn Kiếm',2),(4,'Quận Ba Đình',2),(5,'Quận Sơn Trà',3),(6,'Quận Ngũ Hành Sơn',3),(7,'Quận Sơn Trà',4),(8,'Quận Ngũ Hành Sơn',4);
+/*!40000 ALTER TABLE `district` ENABLE KEYS */;
+UNLOCK TABLES;
 
--- Thêm dữ liệu vào bảng Coach
-INSERT INTO Coach (Status, CoachType, LicensePlates, NumberOfSeat, CoachCompanyID)
-VALUES 
-    ('At station', 'Limousine', '51A-12345', 45, 1),
-    ('In transit', 'Standard', '36B-67890', 30, 2),
-    ('At station', 'Luxury', '92C-54321', 50, 3),
-    ('In transit', 'Limousine', '34D-98765', 40, 4),
-    ('At station', 'Standard', '29E-24680', 35, 5);
+--
+-- Table structure for table `emailcoachemployee`
+--
 
--- Thêm dữ liệu vào bảng CoachEmployee
-INSERT INTO CoachEmployee (SSN, FName, LName, Birthday, Gender, CoachEmployeeType, LicenseNumber, LicenseType, CoachCompanyId, AccountID)
-VALUES 
-    ('123456789', 'Nguyễn', 'Văn A', '1980-05-15', 'M', 'Driver', '30A-12345', 'D1', 1, 1),
-    ('987654321', 'Trần', 'Thị B', '1992-10-20', 'F', 'Assistant', '42B-67890', 'D1', 2, 2),
-    ('456789012', 'Lê', 'Quang C', '1985-03-08', 'M', 'Driver', '77C-54321', 'D1', 3, 3),
-    ('321654987', 'Phạm', 'Văn D', '1990-07-25', 'M', 'Driver', '59D-98765', 'D1', 4, 4),
-    ('789012345', 'Đỗ', 'Thị E', '1988-02-18', 'F', 'Assistant', '72A-24680', 'D1', 5, 5);
+DROP TABLE IF EXISTS `emailcoachemployee`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `emailcoachemployee` (
+  `CoachEmployeeID` int(11) NOT NULL,
+  `Email` varchar(100) NOT NULL,
+  PRIMARY KEY (`CoachEmployeeID`,`Email`),
+  CONSTRAINT `emailcoachemployee_ibfk_1` FOREIGN KEY (`CoachEmployeeID`) REFERENCES `coachemployee` (`CoachStaffId`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
 
--- Thêm dữ liệu vào bảng Route
-INSERT INTO Route (StartDistrictID, EndDistrictID, CoachCompanyID)
-VALUES 
-    (1, 2, 1),
-    (2, 4, 2),
-    (3, 5, 3),
-    (4, 6, 4),
-    (5, 6, 5);
+--
+-- Dumping data for table `emailcoachemployee`
+--
 
--- Thêm dữ liệu vào bảng RouteStop
-INSERT INTO RouteStop (RouteID, Cost, StopDistrictID)
-VALUES 
-    (1, 50000, 1),
-    (1, 70000, 2),
-    (2, 80000, 2),
-    (2, 100000, 4),
-    (3, 60000, 3),
-    (3, 90000, 5),
-    (4, 75000, 4),
-    (4, 95000, 6),
-    (5, 70000, 5),
-    (5, 110000, 6);
+LOCK TABLES `emailcoachemployee` WRITE;
+/*!40000 ALTER TABLE `emailcoachemployee` DISABLE KEYS */;
+INSERT INTO `emailcoachemployee` VALUES (1,'annguyen@gmail.com'),(2,'buoitran@gmail.com'),(3,'cutle@gmail.com'),(4,'duongpham@gmail.com'),(5,'endo@gmail.com'),(6,'khoiduong@gmail.com'),(7,'phuctran@gmail.com'),(8,'phucduong@gmail.com'),(9,'dattran@gmail.com'),(10,'thangnguyen@gmail.com');
+/*!40000 ALTER TABLE `emailcoachemployee` ENABLE KEYS */;
+UNLOCK TABLES;
 
--- Thêm dữ liệu vào bảng Passenger
-INSERT INTO Passenger (SSN, Name, BirthDay, Gender, AccountID)
-VALUES 
-    ('111111111', 'Phạm Thị C', '1990-02-28', 'F', 6),
-    ('222222222', 'Võ Văn D', '1988-07-10', 'M', 7),
-    ('333333333', 'Nguyễn Văn E', '1995-12-15', 'M', 8),
-    ('444444444', 'Trần Thị F', '1993-05-05', 'F', 9),
-    ('555555555', 'Lê Văn G', '1985-11-12', 'M', 10);
+--
+-- Table structure for table `emailpassenger`
+--
 
--- Thêm dữ liệu vào bảng Ticket
-INSERT INTO Ticket (SeatNumber, AccountID, InvoiceID, PassengerSSN, TripID, RouteStopID, RouteID)
-VALUES 
-    (10, 6, 1, '111111111', 1, 1, 1),
-    (15, 7, 2, '222222222', 2, 3, 2),
-    (20, 8, 3, '333333333', 3, 5, 3),
-    (12, 9, 4, '444444444', 4, 7, 4),
-    (18, 10, 5, '555555555', 5, 9, 5);
+DROP TABLE IF EXISTS `emailpassenger`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `emailpassenger` (
+  `Email` varchar(100) NOT NULL,
+  `PassengerSSN` varchar(20) NOT NULL,
+  PRIMARY KEY (`Email`,`PassengerSSN`),
+  KEY `PassengerSSN` (`PassengerSSN`),
+  CONSTRAINT `emailpassenger_ibfk_1` FOREIGN KEY (`PassengerSSN`) REFERENCES `passenger` (`SSN`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
 
--- Thêm dữ liệu vào bảng Invoice
-INSERT INTO Invoice (TaxCode, AccountID, PassengerSSN, Date, Time)
-VALUES 
-    ('ABC123', 6, '111111111', '2023-01-01', '10:30:00'),
-    ('XYZ456', 7, '222222222', '2023-02-15', '12:45:00'),
-    ('123DEF', 8, '333333333', '2023-03-20', '15:00:00'),
-('456GHI', 9, '444444444', '2023-04-10', '14:30:00'),
-('789JKL', 10, '555555555', '2023-05-25', '11:00:00');
+--
+-- Dumping data for table `emailpassenger`
+--
 
--- Thêm dữ liệu vào bảng TerminalEmployee
-INSERT INTO TerminalEmployee (SSN, FName, LName, Birthday, Gender, TerminalEmployeeType, DepartmentID, AccountID, SupervisorID)
+LOCK TABLES `emailpassenger` WRITE;
+/*!40000 ALTER TABLE `emailpassenger` DISABLE KEYS */;
+INSERT INTO `emailpassenger` VALUES ('cutpham@gmail.com','111111111'),('dovo@gmail.com','222222222'),('duongnguyen@gmail.com','777777777'),('emnguyen@gmail.com','333333333'),('ganguyen@gmail.com','000000000'),('giale@gmail.com','555555555'),('luyenvo@gmail.com','666666666'),('maitran@gmail.com','444444444'),('nghianguyen@gmail.com','999999999'),('tienvu@gmail.com','888888888');
+/*!40000 ALTER TABLE `emailpassenger` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `emailterminalemployee`
+--
+
+DROP TABLE IF EXISTS `emailterminalemployee`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `emailterminalemployee` (
+  `Email` varchar(100) NOT NULL,
+  `TerminalEmployeeID` int(11) NOT NULL,
+  PRIMARY KEY (`Email`,`TerminalEmployeeID`),
+  KEY `TerminalEmployeeID` (`TerminalEmployeeID`),
+  CONSTRAINT `emailterminalemployee_ibfk_1` FOREIGN KEY (`TerminalEmployeeID`) REFERENCES `terminalemployee` (`TerminalEmployeeID`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `emailterminalemployee`
+--
+
+LOCK TABLES `emailterminalemployee` WRITE;
+/*!40000 ALTER TABLE `emailterminalemployee` DISABLE KEYS */;
+INSERT INTO `emailterminalemployee` VALUES ('gianghoang@gmai.com',1),('hungtran@gmail.com',6),('huytran@gmail.com',2),('khanhnguyen@gmail.com',4),('linhtran@gmail.com',5),('quyenngo@gmail.com',8),('thaohoang@gmail.com',7),('thaole@gmail.com',3),('thaomai@gmail.com',10),('tuantran@gmail.com',9);
+/*!40000 ALTER TABLE `emailterminalemployee` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `invoice`
+--
+
+DROP TABLE IF EXISTS `invoice`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `invoice` (
+  `InvoiceID` int(11) NOT NULL AUTO_INCREMENT,
+  `TaxCode` varchar(50) DEFAULT NULL,
+  `AccountID` int(11) DEFAULT NULL,
+  `PassengerSSN` varchar(20) DEFAULT NULL,
+  `Date` date DEFAULT NULL,
+  `Time` time DEFAULT NULL,
+  PRIMARY KEY (`InvoiceID`),
+  KEY `PassengerSSN` (`PassengerSSN`),
+  KEY `FK_AccountID_Invoice` (`AccountID`),
+  CONSTRAINT `FK_AccountID_Invoice` FOREIGN KEY (`AccountID`) REFERENCES `account` (`AccountID`),
+  CONSTRAINT `invoice_ibfk_1` FOREIGN KEY (`PassengerSSN`) REFERENCES `passenger` (`SSN`)
+) ENGINE=InnoDB AUTO_INCREMENT=11 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `invoice`
+--
+
+LOCK TABLES `invoice` WRITE;
+/*!40000 ALTER TABLE `invoice` DISABLE KEYS */;
+INSERT INTO `invoice` VALUES (1,'ABC123',31,'000000000','2023-01-01','10:30:00'),(2,'XYZ456',32,'111111111','2023-02-15','12:45:00'),(3,'123DEF',33,'222222222','2023-03-20','15:00:00'),(4,'456GHI',34,'333333333','2023-04-10','14:30:00'),(5,'789JKL',35,'444444444','2023-05-25','11:00:00'),(6,'123FEE',36,'555555555','2023-06-20','15:11:00'),(7,'245WEF',37,'666666666','2023-07-20','17:28:00'),(8,'332KTO',38,'777777777','2023-08-20','19:30:00'),(9,'947JRK',39,'888888888','2023-09-20','08:13:00'),(10,'2213IE',40,'999999999','2023-10-20','09:22:00');
+/*!40000 ALTER TABLE `invoice` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `passenger`
+--
+
+DROP TABLE IF EXISTS `passenger`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `passenger` (
+  `SSN` varchar(20) NOT NULL,
+  `Name` varchar(100) DEFAULT NULL,
+  `BirthDay` date DEFAULT NULL,
+  `Gender` char(1) DEFAULT NULL,
+  `AccountID` int(11) DEFAULT NULL,
+  PRIMARY KEY (`SSN`),
+  KEY `FK_AccountID_Passenger` (`AccountID`),
+  CONSTRAINT `FK_AccountID_Passenger` FOREIGN KEY (`AccountID`) REFERENCES `account` (`AccountID`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `passenger`
+--
+
+LOCK TABLES `passenger` WRITE;
+/*!40000 ALTER TABLE `passenger` DISABLE KEYS */;
+INSERT INTO `passenger` VALUES ('000000000','Nguyễn Thị Gà','1993-03-03','F',40),('111111111','Phạm Thị Cút','1990-02-28','F',31),('222222222','Võ Văn Dơ','1988-07-10','M',32),('333333333','Nguyễn Văn Em','1995-12-15','M',33),('444444444','Trần Thị Mai','1993-05-05','F',34),('555555555','Lê Văn Già','1985-11-12','M',35),('666666666','Võ Luyện','2000-11-18','M',36),('777777777','Nguyễn Hải Dương','1995-12-05','M',37),('888888888','Vũ Văn Tiến','2001-05-02','M',38),('999999999','Nguyễn Đức Nghĩa','2003-02-02','M',39);
+/*!40000 ALTER TABLE `passenger` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `phonenumbercoachcompany`
+--
+
+DROP TABLE IF EXISTS `phonenumbercoachcompany`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `phonenumbercoachcompany` (
+  `PhoneNumber` varchar(20) NOT NULL,
+  `CoachCompanyID` int(11) NOT NULL,
+  PRIMARY KEY (`PhoneNumber`,`CoachCompanyID`),
+  KEY `CoachCompanyID` (`CoachCompanyID`),
+  CONSTRAINT `phonenumbercoachcompany_ibfk_1` FOREIGN KEY (`CoachCompanyID`) REFERENCES `coachcompany` (`CoachCompanyID`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `phonenumbercoachcompany`
+--
+
+LOCK TABLES `phonenumbercoachcompany` WRITE;
+/*!40000 ALTER TABLE `phonenumbercoachcompany` DISABLE KEYS */;
+INSERT INTO `phonenumbercoachcompany` VALUES ('02463734117',9),('02586338861',5),('02596873237',6),('04833453532',3),('04887338888',8),('04893567845',1),('04967338431',10),('05455255555',2),('08538852235',7),('08572847484',4);
+/*!40000 ALTER TABLE `phonenumbercoachcompany` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `phonenumbercoachemployee`
+--
+
+DROP TABLE IF EXISTS `phonenumbercoachemployee`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `phonenumbercoachemployee` (
+  `CoachEmployeeID` int(11) NOT NULL,
+  `PhoneNumber` varchar(20) NOT NULL,
+  PRIMARY KEY (`CoachEmployeeID`,`PhoneNumber`),
+  CONSTRAINT `phonenumbercoachemployee_ibfk_1` FOREIGN KEY (`CoachEmployeeID`) REFERENCES `coachemployee` (`CoachStaffId`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `phonenumbercoachemployee`
+--
+
+LOCK TABLES `phonenumbercoachemployee` WRITE;
+/*!40000 ALTER TABLE `phonenumbercoachemployee` DISABLE KEYS */;
+INSERT INTO `phonenumbercoachemployee` VALUES (1,'0244578962'),(2,'0147853256'),(3,'0896541258'),(4,'0364589571'),(5,'0236547895'),(6,'0256987415'),(7,'0258521475'),(8,'0364785417'),(9,'0485337525'),(10,'0457878616');
+/*!40000 ALTER TABLE `phonenumbercoachemployee` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `phonenumberpassenger`
+--
+
+DROP TABLE IF EXISTS `phonenumberpassenger`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `phonenumberpassenger` (
+  `PhoneNumber` varchar(20) NOT NULL,
+  `PassengerSSN` varchar(20) NOT NULL,
+  PRIMARY KEY (`PhoneNumber`,`PassengerSSN`),
+  KEY `PassengerSSN` (`PassengerSSN`),
+  CONSTRAINT `phonenumberpassenger_ibfk_1` FOREIGN KEY (`PassengerSSN`) REFERENCES `passenger` (`SSN`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `phonenumberpassenger`
+--
+
+LOCK TABLES `phonenumberpassenger` WRITE;
+/*!40000 ALTER TABLE `phonenumberpassenger` DISABLE KEYS */;
+INSERT INTO `phonenumberpassenger` VALUES ('0215892269','111111111'),('0232559633','777777777'),('0246631530','444444444'),('0256314879','333333333'),('0297951232','666666666'),('0364215897','222222222'),('0365421894','555555555'),('0478965415','000000000'),('0651456684','999999999'),('0784115621','888888888');
+/*!40000 ALTER TABLE `phonenumberpassenger` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `phonenumberterminalemployee`
+--
+
+DROP TABLE IF EXISTS `phonenumberterminalemployee`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `phonenumberterminalemployee` (
+  `PhoneNumber` varchar(20) NOT NULL,
+  `TerminalEmployeeID` int(11) NOT NULL,
+  PRIMARY KEY (`PhoneNumber`,`TerminalEmployeeID`),
+  KEY `TerminalEmployeeID` (`TerminalEmployeeID`),
+  CONSTRAINT `phonenumberterminalemployee_ibfk_1` FOREIGN KEY (`TerminalEmployeeID`) REFERENCES `terminalemployee` (`TerminalEmployeeID`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `phonenumberterminalemployee`
+--
+
+LOCK TABLES `phonenumberterminalemployee` WRITE;
+/*!40000 ALTER TABLE `phonenumberterminalemployee` DISABLE KEYS */;
+INSERT INTO `phonenumberterminalemployee` VALUES ('0212589892',2),('0245786541',1),('0263363311',8),('0335412326',9),('0365258995',5),('0369852144',3),('0546532336',7),('0585478541',4),('0599885666',10),('0963214555',6);
+/*!40000 ALTER TABLE `phonenumberterminalemployee` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `province_city`
+--
+
+DROP TABLE IF EXISTS `province_city`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `province_city` (
+  `ProvinceID` int(11) NOT NULL AUTO_INCREMENT,
+  `ProvinceCityName` varchar(100) DEFAULT NULL,
+  PRIMARY KEY (`ProvinceID`)
+) ENGINE=InnoDB AUTO_INCREMENT=7 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `province_city`
+--
+
+LOCK TABLES `province_city` WRITE;
+/*!40000 ALTER TABLE `province_city` DISABLE KEYS */;
+INSERT INTO `province_city` VALUES (1,'Hồ Chí Minh'),(2,'Hà Nội'),(3,'Đà Nẵng'),(4,'Hải Phòng');
+/*!40000 ALTER TABLE `province_city` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `route`
+--
+
+DROP TABLE IF EXISTS `route`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `route` (
+  `RouteID` int(11) NOT NULL AUTO_INCREMENT,
+  `StartDistrictID` int(11) DEFAULT NULL,
+  `EndDistrictID` int(11) DEFAULT NULL,
+  `CoachCompanyID` int(11) DEFAULT NULL,
+  PRIMARY KEY (`RouteID`),
+  KEY `CoachCompanyID` (`CoachCompanyID`),
+  KEY `FK_StartDistrictID` (`StartDistrictID`),
+  KEY `FK_EndDistrictID` (`EndDistrictID`),
+  CONSTRAINT `FK_EndDistrictID` FOREIGN KEY (`EndDistrictID`) REFERENCES `district` (`DistrictID`),
+  CONSTRAINT `FK_StartDistrictID` FOREIGN KEY (`StartDistrictID`) REFERENCES `district` (`DistrictID`),
+  CONSTRAINT `route_ibfk_1` FOREIGN KEY (`CoachCompanyID`) REFERENCES `coachcompany` (`CoachCompanyID`)
+) ENGINE=InnoDB AUTO_INCREMENT=25 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `route`
+--
+
+LOCK TABLES `route` WRITE;
+/*!40000 ALTER TABLE `route` DISABLE KEYS */;
+INSERT INTO `route` (`RouteID`, `StartDistrictID`, `EndDistrictID`, `CoachCompanyID`) VALUES
+(1, 1, 3, 1),
+(2, 1, 4, 2),
+(3, 1, 3, 3),
+(4, 1, 4, 4),
+(5, 1, 5, 5),
+(6, 1, 6, 6),
+(7, 1, 5, 7),
+(8, 1, 6, 8),
+(9, 1, 7, 9),
+(10, 1, 8, 10),
+(11, 1, 7, 11),
+(12, 1, 8, 1),
+(13, 1, 5, 2),
+(14, 1, 6, 3),
+(15, 1, 5, 4),
+(16, 1, 6, 5),
+(17, 1, 7, 6),
+(18, 1, 8, 7),
+(19, 1, 7, 8),
+(20, 1, 8, 9),
+(21, 1, 7, 10),
+(22, 1, 8, 1),
+(23, 1, 7, 2),
+(24, 1, 8, 3);
+/*!40000 ALTER TABLE `route` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `routestop`
+--
+
+DROP TABLE IF EXISTS `routestop`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `routestop` (
+  `RouteStopID` int(11) NOT NULL AUTO_INCREMENT,
+  `RouteID` int(11) DEFAULT NULL,
+  `Cost` decimal(10,2) DEFAULT NULL,
+  `StopDistrictID` int(11) DEFAULT NULL,
+  PRIMARY KEY (`RouteStopID`),
+  KEY `RouteID` (`RouteID`),
+  KEY `FK_StopDistrictID` (`StopDistrictID`),
+  CONSTRAINT `FK_StopDistrictID` FOREIGN KEY (`StopDistrictID`) REFERENCES `district` (`DistrictID`),
+  CONSTRAINT `routestop_ibfk_1` FOREIGN KEY (`RouteID`) REFERENCES `route` (`RouteID`)
+) ENGINE=InnoDB AUTO_INCREMENT=11 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `routestop`
+--
+
+LOCK TABLES `routestop` WRITE;
+/*!40000 ALTER TABLE `routestop` DISABLE KEYS */;
+INSERT INTO `routestop` VALUES (1,1,50000.00,1),(2,1,70000.00,3),(3,2,80000.00,2),(4,2,100000.00,4),(5,3,90000.00,3),(6,3,60000.00,5),(7,4,100000.00,4),(8,4,95000.00,6),(9,5,120000.00,5),(10,5,110000.00,6),(11,8,100000.00,6),(12,9,110000.00,7),(13,10,50000.00,8),(14,11,80000.00,7),(15,12,110000.00,8),(16,13,90000.00,5),(17,14,110000.00,6),(18,15,110000.00,5),(19,16,150000.00,6),(20,17,80000.00,7),(21,18,110000.00,8),(22,19,70000.00,7),(23,20,110000.00,8),(24,21,80000.00,7),(25,22,110000.00,8),(26,23,110000.00,7),(27,24,110000.00,8),(28,7,90000.00,6),(29,7,110000.00,5);
+/*!40000 ALTER TABLE `routestop` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `terminalemployee`
+--
+
+DROP TABLE IF EXISTS `terminalemployee`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `terminalemployee` (
+  `TerminalEmployeeID` int(11) NOT NULL AUTO_INCREMENT,
+  `SSN` varchar(20) DEFAULT NULL,
+  `FName` varchar(50) DEFAULT NULL,
+  `LName` varchar(50) DEFAULT NULL,
+  `BirthDay` date DEFAULT NULL,
+  `Gender` char(1) DEFAULT NULL,
+  `TerminalEmployeeType` varchar(50) DEFAULT NULL,
+  `DepartmentID` int(11) DEFAULT NULL,
+  `AccountID` int(11) DEFAULT NULL,
+  `SupervisorID` int(11) DEFAULT NULL,
+  PRIMARY KEY (`TerminalEmployeeID`),
+  KEY `SupervisorID` (`SupervisorID`),
+  KEY `FK_AccountID_TerminalEmployee` (`AccountID`),
+  CONSTRAINT `FK_AccountID_TerminalEmployee` FOREIGN KEY (`AccountID`) REFERENCES `account` (`AccountID`),
+  CONSTRAINT `terminalemployee_ibfk_1` FOREIGN KEY (`SupervisorID`) REFERENCES `terminalemployee` (`TerminalEmployeeID`)
+) ENGINE=InnoDB AUTO_INCREMENT=11 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `terminalemployee`
+--
+
+LOCK TABLES `terminalemployee` WRITE;
+/*!40000 ALTER TABLE `terminalemployee` DISABLE KEYS */;
+INSERT INTO `terminalemployee` VALUES (1,'789012345','Hoàng Thị Hà','Giang','1982-06-22','F','Supervisor',1,11,5),(2,'345678901','Trần Văn Gia','Huy','1990-09-18','M','Supervisor',2,12,4),(3,'901234567','Lê Thị Huyền','Thảo','1988-04-05','F','Supervisor',2,13,3),(4,'234567890','Nguyễn Văn ','Khánh','1993-11-30','M','Supervisor',2,14,2),(5,'567890123','Trần Thị Khánh','Linh','1985-08-12','F','Supervisor',1,15,1),(6,'998866281','Trần Ngọc','Hùng','1993-02-02','M','Clerk',1,16,1),(7,'389327940','Võ Hoàng','Thao','1995-04-15','M','Clerk',2,17,2),(8,'804020421','Ngô','Quyền','1994-03-22','M','Clerk',1,18,3),(9,'323232312','Trần Quốc','Tuấn','1995-04-28','M','Clerk',1,19,4),(10,'228826775','Mai Thị','Thảo','1996-02-22','F','Clerk',1,20,5);
+/*!40000 ALTER TABLE `terminalemployee` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `ticket`
+--
+
+DROP TABLE IF EXISTS `ticket`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `ticket` (
+  `TicketID` int(11) NOT NULL AUTO_INCREMENT,
+  `SeatNumber` int(11) DEFAULT NULL,
+  `AccountID` int(11) DEFAULT NULL,
+  `InvoiceID` int(11) DEFAULT NULL,
+  `PassengerSSN` varchar(20) DEFAULT NULL,
+  `TripID` int(11) DEFAULT NULL,
+  `RouteStopID` int(11) DEFAULT NULL,
+  `RouteID` int(11) DEFAULT NULL,
+  PRIMARY KEY (`TicketID`),
+  KEY `TripID` (`TripID`),
+  KEY `RouteStopID` (`RouteStopID`),
+  KEY `RouteID` (`RouteID`),
+  KEY `FK_Ticket_AccountID` (`AccountID`),
+  KEY `FK_Ticket_InvoiceID` (`InvoiceID`),
+  KEY `FK_DepartmentID_TerminalEmployee` (`PassengerSSN`),
+  CONSTRAINT `FK_DepartmentID_TerminalEmployee` FOREIGN KEY (`PassengerSSN`) REFERENCES `passenger` (`SSN`),
+  CONSTRAINT `FK_Ticket_AccountID` FOREIGN KEY (`AccountID`) REFERENCES `account` (`AccountID`),
+  CONSTRAINT `FK_Ticket_InvoiceID` FOREIGN KEY (`InvoiceID`) REFERENCES `invoice` (`InvoiceID`),
+  CONSTRAINT `ticket_ibfk_1` FOREIGN KEY (`TripID`) REFERENCES `trip` (`TripID`),
+  CONSTRAINT `ticket_ibfk_2` FOREIGN KEY (`RouteStopID`) REFERENCES `routestop` (`RouteStopID`),
+  CONSTRAINT `ticket_ibfk_3` FOREIGN KEY (`RouteID`) REFERENCES `route` (`RouteID`)
+) ENGINE=InnoDB AUTO_INCREMENT=11 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `ticket`
+--
+
+LOCK TABLES `ticket` WRITE;
+/*!40000 ALTER TABLE `ticket` DISABLE KEYS */;
+INSERT INTO `ticket` VALUES (1,10,31,1,'111111111',1,1,1),(2,15,32,2,'222222222',2,2,2),(3,20,33,3,'333333333',3,3,3),(4,12,34,4,'444444444',4,4,4),(5,18,35,5,'555555555',5,5,5),(6,11,36,6,'666666666',6,6,6),(7,13,37,7,'777777777',7,7,7),(8,19,38,8,'888888888',8,8,8),(9,20,39,9,'999999999',9,9,9),(10,21,40,10,'000000000',10,10,10);
+/*!40000 ALTER TABLE `ticket` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `trip`
+--
+
+DROP TABLE IF EXISTS `trip`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `trip` (
+  `TripID` int(11) NOT NULL AUTO_INCREMENT,
+  `LimitOfSeat` int(11) DEFAULT NULL,
+  `NumberOfReservedSeat` int(11) DEFAULT NULL,
+  `NumberOfNoBookSeat` int(11) DEFAULT NULL,
+  `CoachID` int(11) DEFAULT NULL,
+  `RouteID` int(11) DEFAULT NULL,
+  `DriverID` int(11) DEFAULT NULL,
+  `Date_` date DEFAULT NULL,
+  `Time_` time DEFAULT NULL,
+  PRIMARY KEY (`TripID`),
+  KEY `CoachID` (`CoachID`),
+  KEY `DriverID` (`DriverID`),
+  KEY `FK_RouteID` (`RouteID`),
+  CONSTRAINT `FK_RouteID` FOREIGN KEY (`RouteID`) REFERENCES `route` (`RouteID`),
+  CONSTRAINT `trip_ibfk_1` FOREIGN KEY (`CoachID`) REFERENCES `coach` (`CoachID`),
+  CONSTRAINT `trip_ibfk_2` FOREIGN KEY (`DriverID`) REFERENCES `coachemployee` (`CoachStaffId`)
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `trip`
+--
+
+LOCK TABLES `trip` WRITE;
+/*!40000 ALTER TABLE `trip` DISABLE KEYS */;
+-- INSERT INTO `trip` VALUES (1,50,45,5,1,1,1,'2023-01-15','08:00:00'),(2,35,20,15,2,2,2,'2023-02-20','09:30:00'),(3,35,35,0,3,3,3,'2023-03-25','11:00:00'),(4,50,35,15,4,4,4,'2023-04-10','12:45:00'),(5,50,40,10,5,5,5,'2023-05-05','14:30:00'),(6,50,50,0,6,6,5,'2023-06-25','14:30:00'),(7,35,35,0,7,7,4,'2023-07-05','12:45:00'),(8,35,35,0,8,8,3,'2023-08-22','08:00:00'),(9,35,35,0,9,9,2,'2023-09-15','11:00:00'),(10,50,50,0,10,24,1,'2023-10-15','08:00:00');
+INSERT INTO `trip` (`LimitOfSeat`, `NumberOfReservedSeat`, `NumberOfNoBookSeat`, `CoachID`, `RouteID`, `DriverID`, `Date_`, `Time_`)
 VALUES
-('789012345', 'Hoàng Thị F', 'Giang', '1982-06-22', 'F', 'Supervisor', 1, 11, NULL),
-('345678901', 'Trần Văn G', 'Huy', '1990-09-18', 'M', 'Clerk', 2, 12, 11),
-('901234567', 'Lê Thị H', 'Thảo', '1988-04-05', 'F', 'Clerk', 2, 13, 11),
-('234567890', 'Nguyễn Văn I', 'Khánh', '1993-11-30', 'M', 'Supervisor', 2, 14, NULL),
-('567890123', 'Trần Thị K', 'Linh', '1985-08-12', 'F', 'Clerk', 1, 15, 14);
+(50, 45, 5, 1, 1, 1, '2023-01-15', '08:00:00'),
+(35, 20, 15, 2, 2, 2, '2023-02-20', '09:30:00'),
+(35, 35, 0, 3, 3, 3, '2023-03-25', '11:00:00'),
+(50, 35, 15, 4, 4, 4, '2023-04-10', '12:45:00'),
+(50, 40, 10, 5, 5, 5, '2023-05-05', '14:30:00'),
+(50, 50, 0, 6, 6, 5, '2023-06-25', '14:30:00'),
+(35, 35, 0, 7, 6, 4, '2023-07-05', '12:45:00'),
+(35, 35, 0, 8, 8, 3, '2023-08-22', '08:00:00'),
+(35, 35, 0, 9, 8, 2, '2023-09-15', '11:00:00'),
+(50, 50, 0, 10, 8, 1, '2023-10-15', '08:00:00'),
+(50, 45, 5, 11, 11, 1, '2023-11-11', '08:30:00'),
+(35, 20, 15, 1, 12, 2, '2023-12-12', '10:00:00'),
+(50, 45, 5, 2, 13, 3, '2024-01-01', '09:00:00'),
+(35, 20, 15, 3, 14, 4, '2024-02-14', '11:30:00'),
+(35, 35, 0, 4, 15, 5, '2024-03-25', '13:00:00'),
+(50, 45, 5, 5, 15, 1, '2024-04-04', '14:30:00'),
+(35, 20, 15, 6, 15, 2, '2024-05-15', '16:00:00'),
+(50, 45, 5, 7, 15, 3, '2024-06-26', '17:30:00'),
+(35, 35, 0, 8, 19, 4, '2024-07-07', '18:45:00'),
+(50, 45, 5, 9, 20, 5, '2024-08-08', '20:00:00'),
+(35, 20, 15, 10, 21, 1, '2024-09-09', '21:15:00'),
+(50, 45, 5, 11, 22, 2, '2024-10-10', '22:30:00'),
+(35, 20, 15, 1, 23, 3, '2024-11-11', '23:45:00'),
+(50, 45, 5, 2, 24, 4, '2024-12-12', '00:00:00');
+/*!40000 ALTER TABLE `trip` ENABLE KEYS */;
+UNLOCK TABLES;
+/*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
 
--- Thêm dữ liệu vào bảng Department
-INSERT INTO Department (DepartmentName, ManageEmployeeID)
-VALUES
-('Operation', 1),
-('Finance', 4),
-('Human Resources', 2);
+/*!40101 SET SQL_MODE=@OLD_SQL_MODE */;
+/*!40014 SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS */;
+/*!40014 SET UNIQUE_CHECKS=@OLD_UNIQUE_CHECKS */;
+/*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
+/*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
+/*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
+/*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Thêm dữ liệu vào bảng Account
-INSERT INTO Account (UserName, Password, AccountStatus, AccountType)
-VALUES
-('driver1', 'pass123', 'Active', 'CoachEmployee'),
-('assistant1', 'pass456', 'Active', 'CoachEmployee'),
-('driver2', 'pass789', 'Active', 'CoachEmployee'),
-('passenger1', 'passpass', 'Active', 'Passenger'),
-('passenger2', 'wordword', 'Active', 'Passenger'),
-('passenger3', 'secure123', 'Active', 'Passenger'),
-('supervisor1', 'admin123', 'Active', 'TerminalEmployee'),
-('clerk1', 'clerkpass', 'Active', 'TerminalEmployee'),
-('clerk2', 'clerkword', 'Active', 'TerminalEmployee'),
-('supervisor2', 'admin456', 'Active', 'TerminalEmployee'),
-('clerk3', 'clerksecure', 'Active', 'TerminalEmployee'),
-('clerk4', 'clerk567', 'Active', 'TerminalEmployee'),
-('supervisor3', 'admin789', 'Active', 'TerminalEmployee'),
-('clerk5', 'clerk789', 'Active', 'TerminalEmployee'),
-('clerk6', 'clerkadmin', 'Active', 'TerminalEmployee');
-
--- Thêm dữ liệu vào bảng Assist
-INSERT INTO Assist (TripID, AssistantID)
-VALUES
-(1, 2),
-(2, 5),
-(3, 3),
-(4, 5),
-(5, 4);
-
--- Thêm dữ liệu vào bảng Trip
-INSERT INTO Trip (LimitOfSeat, NumberOfReservedSeat, CoachID, RouteID, DriverID, Date, Time)
-VALUES
-(50, 30, 1, 1, 1, '2023-01-15', '08:00:00'),
-(40, 20, 2, 2, 2, '2023-02-20', '09:30:00'),
-(60, 40, 3, 3, 3, '2023-03-25', '11:00:00'),
-(55, 35, 4, 4, 4, '2023-04-10', '12:45:00'),
-(45, 25, 5, 5, 5, '2023-05-05', '14:30:00');
-
--- Kích hoạt lại ràng buộc sau khi thêm dữ liệu
-SET foreign_key_checks = 1;
-
+-- Dump completed on 2023-12-06 21:14:12
 
 -- Tạo thủ tục tìm kiếm chuyến đi
 DROP PROCEDURE IF EXISTS information_trip; -- Xóa procedure information_trip nếu tồn tại
-
 DELIMITER $$
 
 CREATE PROCEDURE information_trip(
@@ -454,8 +850,7 @@ CREATE PROCEDURE information_trip(
     IN end_date DATE,
     IN end_time TIME,
     IN company_name VARCHAR(255),
-    IN coach_type VARCHAR(255),
-    IN arrangeName VARCHAR(255)
+    IN coach_type VARCHAR(255)
 )
 BEGIN
     WITH route_matching AS (
@@ -464,33 +859,25 @@ BEGIN
         INNER JOIN routestop RS ON R.RouteID = RS.RouteID
         INNER JOIN district D1 ON R.StartDistrictID = D1.DistrictID
         INNER JOIN province_city P1 ON D1.ProvinceID = P1.ProvinceID
-        INNER JOIN district D2 ON R.EndDistrictID = D2.DistrictID
+        INNER JOIN district D2 ON RS.StopDistrictID = D2.DistrictID
         INNER JOIN province_city P2 ON D2.ProvinceID = P2.ProvinceID
-        INNER JOIN district D3 ON RS.StopDistrictID = D3.DistrictID
-        INNER JOIN province_city P3 ON D3.DistrictID = P3.ProvinceID
         WHERE D1.DistrictName = start_district AND P1.ProvinceCityName = start_province
-            AND ((D2.DistrictName = end_district AND P2.ProvinceCityName = end_province) OR (D3.DistrictName = end_district AND P3.ProvinceCityName = end_province))
-    ),
-    trip_matching AS (
-        SELECT DISTINCT T.RouteID, CoC.CoachCompanyName, C.CoachType, T.Time, RM.Cost, (T.LimitOfSeat - T.NumberOfReservedSeat) AS RemainingNoTicket
-        FROM CoachCompany CoC
-        INNER JOIN Coach C ON CoC.CoachCompanyID = C.CoachCompanyID
-        INNER JOIN Trip T ON C.CoachID = T.CoachID
-        INNER JOIN route_matching RM ON T.RouteID = RM.RouteID
-        WHERE T.LimitOfSeat > T.NumberOfReservedSeat
-            AND (company_name IS NULL OR CoC.CoachCompanyName = company_name)
-            AND (coach_type IS NULL OR C.CoachType = coach_type)
+            AND ((D2.DistrictName = end_district AND P2.ProvinceCityName = end_province) )
     )
-
-    SELECT *
-    FROM trip_matching
-    ORDER BY 
-        CASE 
-            WHEN arrangeName = 'name' THEN CoachCompanyName
-            WHEN arrangeName = 'time' THEN Time
-            WHEN arrangeName = 'cost' THEN Cost
-            ELSE NULL
-        END;
+    
+    SELECT DISTINCT T.TripID, CoC.CoachCompanyName, C.CoachType, T.Time_,T.Date_, RM.Cost, (T.LimitOfSeat - T.NumberOfReservedSeat) AS RemainingNoTicket
+    FROM CoachCompany CoC
+    INNER JOIN Coach C ON CoC.CoachCompanyID = C.CoachCompanyID
+    INNER JOIN Trip T ON C.CoachID = T.CoachID
+    INNER JOIN route_matching RM ON T.RouteID = RM.RouteID
+    WHERE T.LimitOfSeat > T.NumberOfReservedSeat
+        AND (company_name ='' OR CoC.CoachCompanyName = company_name)
+        AND (coach_type ='' OR C.CoachType = coach_type)
+        AND T.Date_ >= start_date AND T.Date_ <= end_date
+        AND (
+            T.Date_ > start_date AND T.Date_< end_date
+            OR ((T.Date_ = start_date AND T.Date_ = end_date AND T.Time_ >= start_time AND T.Time_ <= end_time) OR (T.Date_ = start_date AND T.Time_ >= start_time) OR (T.Date_ = end_date AND T.Time_ <= end_time))
+        );
 END $$
 
 DELIMITER ;
@@ -510,7 +897,7 @@ BEGIN
         FROM trip T
         INNER JOIN route R ON R.RouteID = T.RouteID
         INNER JOIN ticket Ti ON T.TripID = Ti.TripID
-        WHERE Ti.PassengerSSN IS NOT NULL AND T.Date BETWEEN start_day AND end_day
+        WHERE Ti.PassengerSSN IS NOT NULL AND T.Date_ BETWEEN start_day AND end_day
         GROUP BY R.RouteID
     );
 
@@ -519,7 +906,7 @@ BEGIN
     FROM trip T
     INNER JOIN route R ON R.RouteID = T.RouteID
     INNER JOIN ticket Ti ON T.TripID = Ti.TripID
-    WHERE Ti.PassengerSSN IS NOT NULL AND T.Date BETWEEN start_day AND end_day
+    WHERE Ti.PassengerSSN IS NOT NULL AND T.Date_ BETWEEN start_day AND end_day
     GROUP BY R.RouteID
     HAVING COUNT(Ti.TicketID) = (SELECT MAX(no_ticket) FROM count_ticket)
     ORDER BY R.RouteID;
