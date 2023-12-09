@@ -845,6 +845,30 @@ END $$
 DELIMITER ;
 
 
+-- TRIGGER 1===================================================================================
+
+DELIMITER //
+
+CREATE TRIGGER remainTicket BEFORE UPDATE ON trip
+FOR EACH ROW
+BEGIN
+  DECLARE oldReservedSeat INT;
+
+  -- Lưu trữ giá trị cũ của NumberOfReservedSeat
+    SET oldReservedSeat = OLD.NumberOfReservedSeat;
+  IF NEW.LimitOfSeat >= NEW.NumberOfReservedSeat THEN    
+    -- Cập nhật NumberOfNoBookSeat nếu giới hạn hợp lệ
+    SET NEW.NumberOfNoBookSeat = NEW.LimitOfSeat - NEW.NumberOfReservedSeat;
+  ELSE
+    -- Nếu giới hạn không hợp lệ, giữ nguyên giá trị cũ của NumberOfReservedSeat
+    SET NEW.NumberOfReservedSeat = oldReservedSeat;
+  END IF;
+END;
+
+//
+DELIMITER ;
+
+
 -- TEST TRIGGER 1==============================================================================
 -- UPDATE trip
 -- SET NumberOfReservedSeat = 15
