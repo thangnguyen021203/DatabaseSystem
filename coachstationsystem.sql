@@ -142,7 +142,7 @@ CREATE TABLE `assist` (
   `AssistantID` int(11) NOT NULL,
   PRIMARY KEY (`TripID`,`AssistantID`),
   KEY `AssistantID` (`AssistantID`),
-  CONSTRAINT `assist_ibfk_1` FOREIGN KEY (`TripID`) REFERENCES `trip` (`TripID`),
+  CONSTRAINT `assist_ibfk_1` FOREIGN KEY (`TripID`) REFERENCES `trip` (`TripID`) ON DELETE CASCADE,
   CONSTRAINT `assist_ibfk_2` FOREIGN KEY (`AssistantID`) REFERENCES `coachemployee` (`CoachStaffId`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
@@ -695,7 +695,7 @@ CREATE TABLE `ticket` (
   CONSTRAINT `FK_DepartmentID_TerminalEmployee` FOREIGN KEY (`PassengerSSN`) REFERENCES `passenger` (`SSN`),
   CONSTRAINT `FK_Ticket_AccountID` FOREIGN KEY (`AccountID`) REFERENCES `account` (`AccountID`),
   CONSTRAINT `FK_Ticket_InvoiceID` FOREIGN KEY (`InvoiceID`) REFERENCES `invoice` (`InvoiceID`),
-  CONSTRAINT `ticket_ibfk_1` FOREIGN KEY (`TripID`) REFERENCES `trip` (`TripID`),
+  CONSTRAINT `ticket_ibfk_1` FOREIGN KEY (`TripID`) REFERENCES `trip` (`TripID`) ON DELETE CASCADE,
   CONSTRAINT `ticket_ibfk_2` FOREIGN KEY (`RouteStopID`) REFERENCES `routestop` (`RouteStopID`),
   CONSTRAINT `ticket_ibfk_3` FOREIGN KEY (`RouteID`) REFERENCES `route` (`RouteID`)
 ) ENGINE=InnoDB AUTO_INCREMENT=26 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
@@ -721,7 +721,7 @@ DROP TABLE IF EXISTS `trip`;
 CREATE TABLE `trip` (
   `TripID` int(11) NOT NULL AUTO_INCREMENT,
   `LimitOfSeat` int(11) DEFAULT NULL,
-  `NumberOfReservedSeat` int(11) DEFAULT NULL,
+  `NumberOfReservedSeat` int(11) DEFAULT 0,
   `NumberOfNoBookSeat` int(11) DEFAULT NULL,
   `CoachID` int(11) DEFAULT NULL,
   `RouteID` int(11) DEFAULT NULL,
@@ -776,7 +776,7 @@ CREATE PROCEDURE information_trip(
     IN coach_type VARCHAR(255)
 )
 BEGIN
-    WITH route_matching AS (
+    CREATE TEMPORARY TABLE IF NOT EXISTS route_matching AS (
         SELECT DISTINCT R.RouteID, RS.Cost
         FROM route R
         INNER JOIN routestop RS ON R.RouteID = RS.RouteID
@@ -786,7 +786,7 @@ BEGIN
         INNER JOIN province_city P2 ON D2.ProvinceID = P2.ProvinceID
         WHERE D1.DistrictName = start_district AND P1.ProvinceCityName = start_province
             AND ((D2.DistrictName = end_district AND P2.ProvinceCityName = end_province) )
-    )
+    );
     
     SELECT DISTINCT T.TripID, CoC.CoachCompanyName, C.CoachType, T.Time_,T.Date_, RM.Cost, (T.LimitOfSeat - T.NumberOfReservedSeat) AS RemainingNoTicket
     FROM CoachCompany CoC
@@ -800,7 +800,10 @@ BEGIN
         AND (
             T.Date_ > start_date AND T.Date_< end_date
             OR ((T.Date_ = start_date AND T.Date_ = end_date AND T.Time_ >= start_time AND T.Time_ <= end_time) OR (T.Date_ = start_date AND T.Time_ >= start_time) OR (T.Date_ = end_date AND T.Time_ <= end_time))
-        );
+        )
+    ORDER BY RM.Cost;
+
+    DROP TEMPORARY TABLE IF EXISTS route_matching;
 END $$
 
 DELIMITER ;

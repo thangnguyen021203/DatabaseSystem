@@ -95,10 +95,8 @@
                     id="provinceStart"
                     name="provinceStart"
                   >
-                    <option selected>Chọn tỉnh</option>
-                    <option value="1">One</option>
-                    <option value="2">Two</option>
-                    <option value="3">Three</option>
+                    <option selected value="">Chọn tỉnh</option>
+                    <option value="Hồ Chí Minh">Hồ Chí Minh</option>
                   </select>
                 </div>
                 <div class="col">
@@ -107,10 +105,8 @@
                     id="districtStart"
                     name="districtStart"
                   >
-                    <option selected>Chọn huyện</option>
-                    <option value="1">One</option>
-                    <option value="2">Two</option>
-                    <option value="3">Three</option>
+                    <option selected value="">Chọn huyện</option>
+                    <option value="Quận 1">Quận 1</option>
                   </select>
                 </div>
               </div>
@@ -129,9 +125,6 @@
                     name="provinceEnd"
                   >
                     <option selected>Chọn tỉnh</option>
-                    <option value="1">One</option>
-                    <option value="2">Two</option>
-                    <option value="3">Three</option>
                   </select>
                 </div>
                 <div class="col">
@@ -141,9 +134,6 @@
                     name="districtEnd"
                   >
                     <option selected>Chọn huyện</option>
-                    <option value="1">One</option>
-                    <option value="2">Two</option>
-                    <option value="3">Three</option>
                   </select>
                 </div>
               </div>
@@ -155,7 +145,7 @@
                 >Thời gian</label
               >
               <div class="row">
-                <div class="col" style="max-width: 45%">
+                <div class="col" style="max-width: 46%">
                   <input
                     type="datetime-local"
                     class="form-control m-2"
@@ -166,7 +156,7 @@
                 <div class="col mt-3" style="max-width: 5%">
                   <i class="bi bi-arrow-right"></i>
                 </div>
-                <div class="col" style="max-width: 45%">
+                <div class="col" style="max-width: 46%">
                   <input
                     type="datetime-local"
                     class="form-control m-2"
@@ -183,68 +173,25 @@
               <div class="fs-5 text-danger-emphasis">Bộ lọc:</div>
             </div>
             <div class="col-5">
-              <select class="form-select" id="filterCompany" name="filterCompany">
-                <option selected>Nhà xe</option>
-                <option value="1">All</option>
-                <option value="2">One</option>
-                <option value="3">Two</option>
+              Nhà xe:
+              <select class="form-select mt-2" id="filterCompany" name="filterCompany">
+                <option value="">Tất cả</option>
               </select>
             </div>
             <div class="col-5">
-              <select class="form-select" id="filterCoachType" name="filterCoachType">
-                <option selected>Loại xe</option>
-                <option value="1">All</option>
-                <option value="2">One</option>
-                <option value="3">Two</option>
+              Loại xe:
+              <select class="form-select mt-2" id="filterCoachType" name="filterCoachType">
+                <option value="">Tất cả</option>
               </select>
             </div>
           </div>
 
-          <div class="row mb-3">
-            <div class="col">
-              <div class="fs-5 text-danger-emphasis">Sắp xếp theo:</div>
-            </div>
-            <div class="col">
-              <div class="form-check">
-                <input
-                  class="form-check-input"
-                  type="radio"
-                  name="arrange"
-                  value="company"
-                />
-                <label class="form-check-label" for="company"> Nhà xe </label>
-              </div>
-            </div>
-            <div class="col">
-              <div class="form-check">
-                <input
-                  class="form-check-input"
-                  type="radio"
-                  name="arrange"
-                  value="time"
-                />
-                <label class="form-check-label" for="time">
-                  Thời gian
-                </label>
-              </div>
-            </div>
-            <div class="col">
-              <div class="form-check">
-                <input
-                  class="form-check-input"
-                  type="radio"
-                  name="arrange"
-                  value="cost"
-                />
-                <label class="form-check-label" for="cost"> Giá vé </label>
-              </div>
-            </div>
-          </div>
           <div class="row d-flex justify-content-around">
             <button
-              type="submit"
+              type="button"
               class="btn btn-primary"
               style="max-width: 220px"
+              onclick="searchTrip();"
             >
               Tìm kiếm
             </button>
@@ -261,19 +208,18 @@
               <th scope="col" class="admin" style="display: none;">Mã số chuyến đi</th>
               <th scope="col">Nhà xe</th>
               <th scope="col">Loại xe</th>
-              <th scope="col">Thời gian khởi hành</th>
+              <th scope="col">Giờ khởi hành</th>
+              <th scope="col">Ngày khởi hành</th>
               <th scope="col">Giá cả</th>
               <th scope="col">Số lượng vé còn</th>
               <th scope="col" class="admin" style="display: none;">Lựa chọn</th>
             </tr>
           </thead>
-          <tbody id="result" >
-
+          <tbody id="result">
           </tbody>
         </table>
       </div>
     </main>
-
     <!-- Form thêm chuyến đi -->
     <div id="create-form" class="position-fixed top-50 start-50 translate-middle" style="width: 500px; opacity: 0;">
       <form class="p-5 rounded bg-body-tertiary" id="formCreate">
@@ -281,61 +227,63 @@
               <h2 class="col-9">Thêm chuyến đi</h2>
               <button type="button" class="btn-close col-2" id="btn-close-create" aria-label="Close", onclick="turnOffCreateForm();"></button>
           </div>
-          <label for="tripCoachId" class="form-label">Mã số xe</label>
+          <label for="CtripCoachId" class="form-label">Mã số xe</label>
           <br>
-          <input type="number" name="tripCoachId" id="tripCoachId" placeholder="Integer" class="form-control">
+          <input type="number" name="tripCoachId" id="CtripCoachId" placeholder="Integer" class="form-control">
           <br>
-          <label for="tripRouteId" class="form-label">Mã số tuyến đường</label>
+          <label for="CtripRouteId" class="form-label">Mã số tuyến đường</label>
           <br>
-          <input type="number" name="tripRouteId" id="tripRouteId" placeholder="Integer" class="form-control">
+          <input type="number" name="tripRouteId" id="CtripRouteId" placeholder="Integer" class="form-control">
           <br>
-          <label for="tripDiverID" class="form-label">Mã số tài xế</label>
+          <label for="CtripDiverID" class="form-label">Mã số tài xế</label>
           <br>
-          <input type="number" name="tripDiverID" id="tripDiverID" placeholder="Integer" class="form-control">
+          <input type="number" name="tripDiverID" id="CtripDiverID" placeholder="Integer" class="form-control">
           <br>
-          <label for="tripTimeStart" class="form-label">Thời gian khởi hành</label>
+          <label for="CtripTimeStart" class="form-label">Thời gian khởi hành</label>
           <br>
-          <input type="datetime-local" class="form-control" id="tripTimeStart" name="tripTimeStart"/>
+          <input type="datetime-local" class="form-control" id="CtripTimeStart" name="tripTimeStart"/>
           <br>
-          <label for="tripLimitSeat" class="form-label">Số lượng chỗ ngồi</label>
+          <label for="CtripLimitSeat" class="form-label">Số lượng chỗ ngồi</label>
           <br>
-          <input type="number" name="tripLimitSeat" id="tripLimitSeat" placeholder="Integer" class="form-control">
+          <input type="number" name="tripLimitSeat" id="CtripLimitSeat" placeholder="Integer" class="form-control">
           <br>
           <div class="row justify-content-md-center">
-              <button type="button" name="submitCreate" id="submitCreate" class="btn btn-primary" style="width:auto;" onclick="tableAfterCreate()">Thêm</button>
+              <button type="button" name="submitCreate" id="submitCreate" class="btn btn-primary" style="width:auto;" onclick="tableAfterCreate();">Thêm</button>
           </div>
       </form>
     </div>
 
     <!-- Form chỉnh sửa chuyến đi -->
-    <div id="modify-form" class="position-fixed top-50 start-50 translate-middle" style="width: 500px; opacity: 0;">
+    <div id="modify-form" class="position-fixed top-50 start-50 translate-middle" style="width: 500px;opacity: 0;">
       <form class="p-5 rounded bg-body-tertiary" id="formModify">
           <div class="row mb-2 d-flex justify-content-end">
               <h2 class="col-9">Chỉnh sửa chuyến đi</h2>
-              <button type="button" class="btn-close col-2" id="btn-close-create" aria-label="Close", onclick="turnOffCreateForm();"></button>
+              <button type="button" class="btn-close col-2" id="btn-close-create" aria-label="Close", onclick="turnOffModifyForm();"></button>
           </div>
-          <label for="tripCoachId" class="form-label">Mã số xe</label>
+          <input type="hidden" name="tripId" id="MtripId" placeholder="Integer" class="form-control" value="1">
+
+          <label for="MtripCoachId" class="form-label">Mã số xe</label>
           <br>
-          <input type="number" name="tripCoachId" id="tripCoachId" placeholder="Integer" class="form-control">
+          <input type="number" name="tripCoachId" id="MtripCoachId" placeholder="Integer" class="form-control">
           <br>
-          <label for="tripRouteId" class="form-label">Mã số tuyến đường</label>
+          <label for="MtripRouteId" class="form-label">Mã số tuyến đường</label>
           <br>
-          <input type="number" name="tripRouteId" id="tripRouteId" placeholder="Integer" class="form-control">
+          <input type="number" name="tripRouteId" id="MtripRouteId" placeholder="Integer" class="form-control">
           <br>
-          <label for="tripDiverID" class="form-label">Mã số tài xế</label>
+          <label for="MtripDiverID" class="form-label">Mã số tài xế</label>
           <br>
-          <input type="number" name="tripDiverID" id="tripDiverID" placeholder="Integer" class="form-control">
+          <input type="number" name="tripDiverID" id="MtripDiverID" placeholder="Integer" class="form-control">
           <br>
-          <label for="tripTimeStart" class="form-label">Thời gian khởi hành</label>
+          <label for="MtripTimeStart" class="form-label">Thời gian khởi hành</label>
           <br>
-          <input type="datetime-local" class="form-control" id="tripTimeStart" name="tripTimeStart"/>
+          <input type="datetime-local" class="form-control" id="MtripTimeStart" name="tripTimeStart"/>
           <br>
-          <label for="tripRemainSeat" class="form-label">Số lượng chỗ ngồi</label>
+          <label for="MtripRemainSeat" class="form-label">Số lượng chỗ ngồi</label>
           <br>
-          <input type="number" name="tripLimitSeat" id="tripLimitSeat" placeholder="Integer" class="form-control">
+          <input type="number" name="tripLimitSeat" id="MtripLimitSeat" placeholder="Integer" class="form-control">
           <br>
           <div class="row justify-content-md-center">
-              <button type="button" name="submitModify" id="submitModify" class="btn btn-primary" style="width:auto;" onclick="tableAfterCreate()">Chỉnh sửa</button>
+              <button type="button" name="submitModify" id="submitModify" class="btn btn-primary" style="width:auto;" onclick="tableAfterModify()">Chỉnh sửa</button>
           </div>
       </form>
     </div>
