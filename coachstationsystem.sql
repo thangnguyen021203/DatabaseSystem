@@ -1,3 +1,5 @@
+CREATE DATABASE  IF NOT EXISTS `coachstationsystem` /*!40100 DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci */;
+USE `coachstationsystem`;
 -- MariaDB dump 10.19  Distrib 10.4.32-MariaDB, for Win64 (AMD64)
 --
 -- Host: 127.0.0.1    Database: coachstationsystem
@@ -18,15 +20,6 @@
 --
 -- Table structure for table `account`
 --
--- Kiểm tra nếu database tồn tại thì xóa
-DROP DATABASE IF EXISTS `CoachStationSystem`;
-
--- Tạo mới database
-CREATE DATABASE `CoachStationSystem`
-DEFAULT CHARACTER SET utf8mb4
-DEFAULT COLLATE utf8mb4_unicode_ci;
--- Sử dụng database vừa tạo
-USE `CoachStationSystem`;
 
 DROP TABLE IF EXISTS `account`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
@@ -38,7 +31,7 @@ CREATE TABLE `account` (
   `AccountStatus` varchar(20) DEFAULT NULL,
   `AccountType` varchar(20) DEFAULT NULL CHECK (`AccountType` in ('CoachEmployee','Passenger','TerminalEmployee')),
   PRIMARY KEY (`AccountID`)
-) ENGINE=InnoDB AUTO_INCREMENT=41 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=56 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -47,7 +40,7 @@ CREATE TABLE `account` (
 
 LOCK TABLES `account` WRITE;
 /*!40000 ALTER TABLE `account` DISABLE KEYS */;
-INSERT INTO `account` VALUES (1,'driver1','pass123','Active','CoachEmployee'),(2,'driver2','pass456','Active','CoachEmployee'),(3,'driver3','pass789','Active','CoachEmployee'),(4,'driver4','passpass','Active','CoachEmployee'),(5,'driver5','wordword','Active','CoachEmployee'),(6,'driver6','secure123','Active','CoachEmployee'),(7,'driver7','admin123','Active','CoachEmployee'),(8,'driver8','clerkpass','Active','CoachEmployee'),(9,'driver9','clerkword','Active','CoachEmployee'),(10,'driver10','admin456','Active','CoachEmployee'),(11,'supervisor1','clerksecure','Active','TerminalEmployee'),(12,'supervisor2','clerk567','Active','TerminalEmployee'),(13,'supervisor3','admin789','Active','TerminalEmployee'),(14,'supervisor4','clerk789','Active','TerminalEmployee'),(15,'supervisor5','clerkadmin','Active','TerminalEmployee'),(16,'supervisor6','hihi','Active','TerminalEmployee'),(17,'supervisor7','haha','Active','TerminalEmployee'),(18,'supervisor8','hoho','Active','TerminalEmployee'),(19,'supervisor9','hehe','Active','TerminalEmployee'),(20,'supervisor10','hjhj','Active','TerminalEmployee'),(21,'clerk1','jeje','Active','TerminalEmployee'),(22,'clerk2','gege','Active','TerminalEmployee'),(23,'clerk3','aloalo','Active','TerminalEmployee'),(24,'clerk4','hello','Active','TerminalEmployee'),(25,'clerk5','chohoi','Active','TerminalEmployee'),(26,'clerk6','aivay','Active','TerminalEmployee'),(27,'clerk7','tuine','Active','TerminalEmployee'),(28,'clerk8','chuai','Active','TerminalEmployee'),(29,'clerk9','1122','Active','TerminalEmployee'),(30,'clerk10','3344','Active','TerminalEmployee'),(31,'passenger1','5566','Active','Passenger'),(32,'passenger2','7788','Active','Passenger'),(33,'passenger3','8899','Active','Passenger'),(34,'passenger4','dtkdtk','Active','Passenger'),(35,'passenger5','tbptbp','Active','Passenger'),(36,'passenger6','nqtnqt','Active','Passenger'),(37,'passenger7','dqtdqt','Active','Passenger'),(38,'passenger8','ttdttd','Active','Passenger'),(39,'passenger9','lplp1','Active','Passenger'),(40,'passenger10','lplp2','Active','Passenger');
+INSERT INTO `account` VALUES (1,'driver1','pass123','ActiveActive','CoachEmployee'),(2,'driver2','pass456','Active','CoachEmployee'),(3,'driver3','pass789','Active','CoachEmployee'),(4,'driver4','passpass','Active','CoachEmployee'),(5,'driver5','wordword','Active','CoachEmployee'),(6,'driver6','secure123','Active','CoachEmployee'),(7,'driver7','admin123','Active','CoachEmployee'),(8,'driver8','clerkpass','Active','CoachEmployee'),(9,'driver9','clerkword','Active','CoachEmployee'),(10,'driver10','admin456','Active','CoachEmployee'),(11,'supervisor1','clerksecure','Active','TerminalEmployee'),(12,'supervisor2','clerk567','Active','TerminalEmployee'),(13,'supervisor3','admin789','Active','TerminalEmployee'),(14,'supervisor4','clerk789','Active','TerminalEmployee'),(15,'supervisor5','clerkadmin','Active','TerminalEmployee'),(16,'supervisor6','hihi','Active','TerminalEmployee'),(17,'supervisor7','haha','Active','TerminalEmployee'),(18,'supervisor8','hoho','Active','TerminalEmployee'),(19,'supervisor9','hehe','Active','TerminalEmployee'),(20,'supervisor10','hjhj','Active','TerminalEmployee'),(21,'clerk1','jeje','Active','TerminalEmployee'),(22,'clerk2','gege','Active','TerminalEmployee'),(23,'clerk3','aloalo','Active','TerminalEmployee'),(24,'clerk4','hello','Active','TerminalEmployee'),(25,'clerk5','chohoi','Active','TerminalEmployee'),(26,'clerk6','aivay','Active','TerminalEmployee'),(27,'clerk7','tuine','Active','TerminalEmployee'),(28,'clerk8','chuai','Active','TerminalEmployee'),(29,'clerk9','1122','Active','TerminalEmployee'),(30,'clerk10','3344','Active','TerminalEmployee'),(31,'passenger1','5566','Active','Passenger'),(32,'passenger2','7788','Active','Passenger'),(33,'passenger3','8899','Active','Passenger'),(34,'passenger4','dtkdtk','Active','Passenger'),(35,'passenger5','tbptbp','Active','Passenger'),(36,'passenger6','nqtnqt','Active','Passenger'),(37,'passenger7','dqtdqt','Active','Passenger'),(38,'passenger8','ttdttd','Active','Passenger'),(39,'passenger9','lplp1','Active','Passenger'),(40,'passenger10','lplp2','Active','Passenger'),(41,'passenger11','pass1','Active','Passenger'),(42,'passenger12','pass2','Active','Passenger'),(43,'passenger13','pass3','Active','Passenger'),(44,'passenger14','pass4','Active','Passenger'),(45,'passenger15','pass5','Active','Passenger'),(46,'passenger16','pass6','Active','Passenger'),(47,'passenger17','pass7','Active','Passenger'),(48,'passenger18','pass8','Active','Passenger'),(49,'passenger19','pass9','Active','Passenger'),(50,'passenger20','pass10','Active','Passenger'),(51,'passenger21','pass11','Active','Passenger'),(52,'passenger22','pass12','Active','Passenger'),(53,'passenger23','pass13','Active','Passenger'),(54,'passenger24','pass14','Active','Passenger'),(55,'passenger25','pass15','Active','Passenger');
 /*!40000 ALTER TABLE `account` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -104,7 +97,7 @@ CREATE TABLE `addresspassenger` (
 
 LOCK TABLES `addresspassenger` WRITE;
 /*!40000 ALTER TABLE `addresspassenger` DISABLE KEYS */;
-INSERT INTO `addresspassenger` VALUES ('122','Đường Cao Thắng','Quận Hải Châu','Đà Nẵng','666666666'),('191','Đường Phan Châu Chinh ','Quận 1 ','TPCHM','999999999'),('222','Đường Ngô Quyền','Quận Bình Thành','TPHCM','000000000'),('437','Đường Nguyễn Xuyển','Quận 9','TPCHM','333333333'),('556','Đường Hoàng Văn Thụ','Đường Hoàng Văn Thụ','TPCHM','111111111'),('654','Đường Trần Văn Hưởng','Quận 2','TPCHM','555555555'),('69','Đường Trần Duy Hưng','Quận Hà Đông ','Hà Nội','888888888'),('721','Đường Bùi Thị Xuân','Quận Tây Hồ','Hà Nội','444444444'),('90','Đường Lý Tự Trọng','Quận Thanh Khê ','Hải Phòng','777777777'),('990','Đường Lạc Long Quân','Quận Đống Đa','Hà Nội','222222222');
+INSERT INTO `addresspassenger` VALUES ('111','Đường Cao Thắng','Quận Hải Châu','Đà Nẵng','135724680'),('111','Đường Trần Văn Hưởng','Quận 2','TPCHM','456745678'),('1111','Đường Lạc Long Quân','Quận Đống Đa','Hà Nội','010203040'),('122','Đường Cao Thắng','Quận Hải Châu','Đà Nẵng','666666666'),('123','Đường Lý Tự Trọng','Quận Thanh Khê ','Hải Phòng','090807060'),('138','Đường Ngô Quyền','Quận Bình Thành','TPCHM','003334445'),('139','Đường Võ Văn Tần','Quận 1','TPCHM','020103040'),('191','Đường Phan Châu Chinh ','Quận 1 ','TPCHM','999999999'),('192','Đường Phan Châu Chinh ','Quận 1 ','Quận 1 ','123412345'),('222','Đường Ngô Quyền','Quận Bình Thành','TPHCM','000000000'),('32','Đường Bùi Thị Xuân','Quận Tây Hồ','Hà Nội','678967890'),('321','Đường Cao Thắng','Quận Hải Châu','Đà Nẵng','055522211'),('378','Đường Ngô Quyền','Quận Bình Thành','TPCHM','010101022'),('437','Đường Nguyễn Xuyển','Quận 9','TPCHM','333333333'),('55','Đường Ngô Quyền','Quận Bình Thành','TPCHM','567856789'),('553','Đường Trần Duy Hưng','Quận Hà Đông ','Hà Nội','234523456'),('556','Đường Hoàng Văn Thụ','Quận Tân Phú','TPCHM','111111111'),('654','Đường Trần Văn Hưởng','Quận 2','TPCHM','555555555'),('69','Đường Trần Duy Hưng','Quận Hà Đông ','Hà Nội','888888888'),('721','Đường Bùi Thị Xuân','Quận Tây Hồ','Hà Nội','444444444'),('839','Đường Bùi Thị Xuân','Quận Tây Hồ','Quận Tây Hồ','001100223'),('864','Đường Hoàng Văn Thụ','Quận Tân Bình','TPCHM','050607080'),('90','Đường Lý Tự Trọng','Quận Thanh Khê ','Hải Phòng','777777777'),('910','Đường Bùi Thị Xuân','Quận Tây Hồ','Quận Tây Hồ','020202033'),('990','Đường Lạc Long Quân','Quận Đống Đa','Hà Nội','222222222');
 /*!40000 ALTER TABLE `addresspassenger` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -181,7 +174,7 @@ CREATE TABLE `coach` (
   PRIMARY KEY (`CoachID`),
   KEY `CoachCompanyID` (`CoachCompanyID`),
   CONSTRAINT `coach_ibfk_1` FOREIGN KEY (`CoachCompanyID`) REFERENCES `coachcompany` (`CoachCompanyID`)
-) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=23 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -190,16 +183,7 @@ CREATE TABLE `coach` (
 
 LOCK TABLES `coach` WRITE;
 /*!40000 ALTER TABLE `coach` DISABLE KEYS */;
-INSERT INTO `coach` (`Status`, `CoachType`, `LicensePlates`, `NumberOfSeat`, `CoachCompanyID`) VALUES ('At station','Limousine','51A-12345',35,1),('In transit','Standard','36B-67890',50,2),('At station','Luxury','92C-54321',35,3),('In transit','Limousine','34D-98765',35,4),('At station','Standard','29E-24680',50,5),('At station','Limousine','29E-24680',35,6),('At station','Luxury','39E-34325',35,7),('In transit','Limousine','81E-65766',35,8),('At station','Standard','39E-28786',50,9),('In transit','Luxury','19E-34256',35,10),('In transit','Standard','91E-97767',50,11),('In transit', 'Luxury', '12F-87654', 35, 1),('At station', 'Standard', '45G-54321', 50, 2),
-('In transit', 'Luxury', '78H-12345', 35, 3),
-('At station', 'Limousine', '67I-98765', 35, 4),
-('In transit', 'Standard', '90J-23456', 50, 5),
-('At station', 'Limousine', '23K-87654', 35, 6),
-('In transit', 'Luxury', '56L-34567', 35, 7),
-('At station', 'Standard', '89M-87654', 50, 8),
-('In transit', 'Limousine', '01N-23456', 35, 9),
-('At station', 'Standard', '23O-87654', 50, 10),
-('In transit', 'Luxury', '45P-34567', 35, 11);
+INSERT INTO `coach` VALUES (1,'At station','Limousine','51A-12345',35,1),(2,'In transit','Standard','36B-67890',50,2),(3,'At station','Luxury','92C-54321',35,3),(4,'In transit','Limousine','34D-98765',35,4),(5,'At station','Standard','29E-24680',50,5),(6,'At station','Limousine','29E-24680',35,6),(7,'At station','Luxury','39E-34325',35,7),(8,'In transit','Limousine','81E-65766',35,8),(9,'At station','Standard','39E-28786',50,9),(10,'In transit','Luxury','19E-34256',35,10),(11,'In transit','Standard','91E-97767',50,11),(12,'In transit','Luxury','12F-87654',35,1),(13,'At station','Standard','45G-54321',50,2),(14,'In transit','Luxury','78H-12345',35,3),(15,'At station','Limousine','67I-98765',35,4),(16,'In transit','Standard','90J-23456',50,5),(17,'At station','Limousine','23K-87654',35,6),(18,'In transit','Luxury','56L-34567',35,7),(19,'At station','Standard','89M-87654',50,8),(20,'In transit','Limousine','01N-23456',35,9),(21,'At station','Standard','23O-87654',50,10),(22,'In transit','Luxury','45P-34567',35,11);
 /*!40000 ALTER TABLE `coach` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -226,18 +210,7 @@ CREATE TABLE `coachcompany` (
 
 LOCK TABLES `coachcompany` WRITE;
 /*!40000 ALTER TABLE `coachcompany` DISABLE KEYS */;
-INSERT INTO `coachcompany` (`CoachCompanyID`, `DateOfContractRegistration`, `EndDateOfContract`, `CoachCompanyName`, `Status`) VALUES
-(1, '2022-01-01', '2026-12-31', 'Phương Trang', 'Action'),
-(2, '2022-02-01', '2024-11-30', 'Hoàng Long', 'Action'),
-(3, '2022-03-01', '2022-10-31', 'Mai Linh', 'Not Action'),
-(4, '2022-04-01', '2025-09-30', 'Thành Bưởi', 'Action'),
-(5, '2022-05-01', '2022-08-31', 'Minh Thành Phát', 'Not Action'),
-(6, '2022-11-18', '2025-11-18', 'Văn Minh', 'Action'),
-(7, '2023-01-01', '2026-01-01', 'Kumho Samco', 'Action'),
-(8, '2023-12-24', '2025-12-24', 'Kim Hoàng', 'Action'),
-(9, '2023-11-12', '2025-11-12', 'Tuấn Hưng', 'Action'),
-(10, '2023-08-09', '2025-08-09', 'Hùng Cường', 'Action'),
-(11, '2024-01-01', '2026-01-01', 'Hoàng Nga', 'Action');
+INSERT INTO `coachcompany` VALUES (1,'2022-01-01','2026-12-31','Phương Trang','Action'),(2,'2022-02-01','2024-11-30','Hoàng Long','Action'),(3,'2022-03-01','2022-10-31','Mai Linh','Not Action'),(4,'2022-04-01','2025-09-30','Thành Bưởi','Action'),(5,'2022-05-01','2022-08-31','Minh Thành Phát','Not Action'),(6,'2022-11-18','2025-11-18','Văn Minh','Action'),(7,'2023-01-01','2026-01-01','Kumho Samco','Action'),(8,'2023-12-24','2025-12-24','Kim Hoàng','Action'),(9,'2023-11-12','2025-11-12','Tuấn Hưng','Action'),(10,'2023-08-09','2025-08-09','Hùng Cường','Action'),(11,'2024-01-01','2026-01-01','Hoàng Nga','Action');
 /*!40000 ALTER TABLE `coachcompany` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -380,7 +353,7 @@ CREATE TABLE `emailpassenger` (
 
 LOCK TABLES `emailpassenger` WRITE;
 /*!40000 ALTER TABLE `emailpassenger` DISABLE KEYS */;
-INSERT INTO `emailpassenger` VALUES ('cutpham@gmail.com','111111111'),('dovo@gmail.com','222222222'),('duongnguyen@gmail.com','777777777'),('emnguyen@gmail.com','333333333'),('ganguyen@gmail.com','000000000'),('giale@gmail.com','555555555'),('luyenvo@gmail.com','666666666'),('maitran@gmail.com','444444444'),('nghianguyen@gmail.com','999999999'),('tienvu@gmail.com','888888888');
+INSERT INTO `emailpassenger` VALUES ('aizawa@gmail.com','678967890'),('binladen@gmail.com','090807060'),('bundy@gmail.com','123412345'),('cutpham@gmail.com','111111111'),('dovo@gmail.com','222222222'),('duongnguyen@gmail.com','777777777'),('emnguyen@gmail.com','333333333'),('evan@gmail.com','234523456'),('ganguyen@gmail.com','000000000'),('giale@gmail.com','555555555'),('jolie@gmail.com','456745678'),('lothbrok@gmail.com','003334445'),('luyenle@gmail.com','666666666'),('maitran@gmail.com','444444444'),('nghianguyen@gmail.com','999999999'),('obama@gmail.com','135724680'),('ozawa@gmail.com','567856789'),('pinkman@gmail.com','050607080'),('ronaldo@gmail.com','055522211'),('rose@gmail.com','010101022'),('scofield@gmail.com','001100223'),('shinoda@gmail.com','020202033'),('swhite@gmail.com','020103040'),('tienvu@gmail.com','888888888'),('wwhite@gmail.com','010203040');
 /*!40000 ALTER TABLE `emailpassenger` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -429,7 +402,7 @@ CREATE TABLE `invoice` (
   KEY `FK_AccountID_Invoice` (`AccountID`),
   CONSTRAINT `FK_AccountID_Invoice` FOREIGN KEY (`AccountID`) REFERENCES `account` (`AccountID`),
   CONSTRAINT `invoice_ibfk_1` FOREIGN KEY (`PassengerSSN`) REFERENCES `passenger` (`SSN`)
-) ENGINE=InnoDB AUTO_INCREMENT=11 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=26 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -438,7 +411,7 @@ CREATE TABLE `invoice` (
 
 LOCK TABLES `invoice` WRITE;
 /*!40000 ALTER TABLE `invoice` DISABLE KEYS */;
-INSERT INTO `invoice` VALUES (1,'ABC123',31,'000000000','2023-01-01','10:30:00'),(2,'XYZ456',32,'111111111','2023-02-15','12:45:00'),(3,'123DEF',33,'222222222','2023-03-20','15:00:00'),(4,'456GHI',34,'333333333','2023-04-10','14:30:00'),(5,'789JKL',35,'444444444','2023-05-25','11:00:00'),(6,'123FEE',36,'555555555','2023-06-20','15:11:00'),(7,'245WEF',37,'666666666','2023-07-20','17:28:00'),(8,'332KTO',38,'777777777','2023-08-20','19:30:00'),(9,'947JRK',39,'888888888','2023-09-20','08:13:00'),(10,'2213IE',40,'999999999','2023-10-20','09:22:00');
+INSERT INTO `invoice` VALUES (1,'ABC123',31,'111111111','2023-01-01','10:30:00'),(2,'XYZ456',32,'222222222','2023-02-15','12:45:00'),(3,'123DEF',33,'333333333','2023-03-20','15:00:00'),(4,'456GHI',34,'444444444','2023-04-10','14:30:00'),(5,'789JKL',35,'555555555','2023-05-25','11:00:00'),(6,'123FEE',36,'666666666','2023-06-20','15:11:00'),(7,'245WEF',37,'777777777','2023-07-20','17:28:00'),(8,'332KTO',38,'888888888','2023-08-20','19:30:00'),(9,'947JRK',39,'999999999','2023-09-20','08:13:00'),(10,'221RIE',40,'000000000','2023-10-20','09:22:00'),(11,'432FWE',41,'123412345','2023-11-20','11:11:00'),(12,'422WQD',42,'234523456','2023-12-20','12:12:00'),(13,'643EQD',43,'456745678','2023-01-21','07:07:00'),(14,'213GEG',44,'567856789','2023-02-21','08:08:00'),(15,'322GQE',45,'678967890','2023-03-21','09:09:00'),(16,'932RFF',46,'135724680','2023-04-21','10:10:00'),(17,'485GER',47,'090807060','2023-05-21','13:13:00'),(18,'944GEG',48,'010203040','2023-06-21','14:14:00'),(19,'320FBB',49,'050607080','2023-07-21','15:15:00'),(20,'410FWB',50,'020103040','2023-08-21','16:16:00'),(21,'7439MFK',51,'001100223','2023-09-21','17:17:00'),(22,'429MFE',52,'003334445','2023-10-21','18:18:00'),(23,'810MFW',53,'010101022','2023-11-21','19:19:00'),(24,'043REE',54,'020202033','2023-12-21','20:20:00'),(25,'923FWF',55,'055522211','2024-01-01','19:30:00');
 /*!40000 ALTER TABLE `invoice` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -467,7 +440,7 @@ CREATE TABLE `passenger` (
 
 LOCK TABLES `passenger` WRITE;
 /*!40000 ALTER TABLE `passenger` DISABLE KEYS */;
-INSERT INTO `passenger` VALUES ('000000000','Nguyễn Thị Gà','1993-03-03','F',40),('111111111','Phạm Thị Cút','1990-02-28','F',31),('222222222','Võ Văn Dơ','1988-07-10','M',32),('333333333','Nguyễn Văn Em','1995-12-15','M',33),('444444444','Trần Thị Mai','1993-05-05','F',34),('555555555','Lê Văn Già','1985-11-12','M',35),('666666666','Võ Luyện','2000-11-18','M',36),('777777777','Nguyễn Hải Dương','1995-12-05','M',37),('888888888','Vũ Văn Tiến','2001-05-02','M',38),('999999999','Nguyễn Đức Nghĩa','2003-02-02','M',39);
+INSERT INTO `passenger` VALUES ('000000000','Nguyễn Thị Gà','1993-03-03','F',40),('001100223','Micheal Scofield','1988-11-11','M',51),('003334445','Ragnar Lothbrok','1991-11-20','M',52),('010101022','Axl Rose','0000-00-00','M',53),('010203040','Walter White','1956-07-07','M',48),('020103040','Skyler White','1997-10-10','F',50),('020202033','Mike Shinoda','2001-12-07','M',54),('050607080','Jesse Pinkman','1999-05-29','M',49),('055522211','Chis Ronaldo','2003-11-18','M',55),('090807060','Osama Binladen','1977-09-11','M',47),('111111111','Phạm Thị Cút','1990-02-28','F',31),('123412345','Ted Bundy','1965-02-01','M',41),('135724680','Brack Obama','1988-10-11','M',46),('222222222','Võ Văn Dơ','1988-07-10','M',32),('234523456','Chris Evan','1997-09-10','M',42),('333333333','Nguyễn Văn Em','1995-12-15','M',33),('444444444','Trần Thị Mai','1993-05-05','F',34),('456745678','Angelina Jolie','2000-02-18','F',43),('555555555','Lê Văn Già','1985-11-12','M',35),('567856789','Maria Ozawa','1980-11-21','F',44),('666666666','Lê Văn Luyện','2000-11-18','M',36),('678967890','Jun Aizawa','1979-02-22','F',45),('777777777','Nguyễn Hải Dương','1995-12-05','M',37),('888888888','Vũ Văn Tiến','2001-05-02','M',38),('999999999','Nguyễn Đức Nghĩa','2003-02-02','M',39);
 /*!40000 ALTER TABLE `passenger` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -544,7 +517,7 @@ CREATE TABLE `phonenumberpassenger` (
 
 LOCK TABLES `phonenumberpassenger` WRITE;
 /*!40000 ALTER TABLE `phonenumberpassenger` DISABLE KEYS */;
-INSERT INTO `phonenumberpassenger` VALUES ('0215892269','111111111'),('0232559633','777777777'),('0246631530','444444444'),('0256314879','333333333'),('0297951232','666666666'),('0364215897','222222222'),('0365421894','555555555'),('0478965415','000000000'),('0651456684','999999999'),('0784115621','888888888');
+INSERT INTO `phonenumberpassenger` VALUES ('0025252772','020103040'),('0212578763','001100223'),('0214545272','234523456'),('0215892269','111111111'),('0223732777','135724680'),('0225728824','003334445'),('0232559633','777777777'),('0244137657','678967890'),('0246631530','444444444'),('0252752732','010101022'),('0256314879','333333333'),('0272572527','020202033'),('0272875554','010203040'),('0287338877','055522211'),('0297951232','666666666'),('0341245732','050607080'),('0345367676','090807060'),('0353753736','456745678'),('0364215897','222222222'),('0365421894','555555555'),('0478965415','000000000'),('0523787878','567856789'),('0548873387','123412345'),('0651456684','999999999'),('0784115621','888888888');
 /*!40000 ALTER TABLE `phonenumberpassenger` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -626,31 +599,7 @@ CREATE TABLE `route` (
 
 LOCK TABLES `route` WRITE;
 /*!40000 ALTER TABLE `route` DISABLE KEYS */;
-INSERT INTO `route` (`RouteID`, `StartDistrictID`, `EndDistrictID`, `CoachCompanyID`) VALUES
-(1, 1, 3, 1),
-(2, 1, 4, 2),
-(3, 1, 3, 3),
-(4, 1, 4, 4),
-(5, 1, 5, 5),
-(6, 1, 6, 6),
-(7, 1, 5, 7),
-(8, 1, 6, 8),
-(9, 1, 7, 9),
-(10, 1, 8, 10),
-(11, 1, 7, 11),
-(12, 1, 8, 1),
-(13, 1, 5, 2),
-(14, 1, 6, 3),
-(15, 1, 5, 4),
-(16, 1, 6, 5),
-(17, 1, 7, 6),
-(18, 1, 8, 7),
-(19, 1, 7, 8),
-(20, 1, 8, 9),
-(21, 1, 7, 10),
-(22, 1, 8, 1),
-(23, 1, 7, 2),
-(24, 1, 8, 3);
+INSERT INTO `route` VALUES (1,1,3,1),(2,1,4,2),(3,1,3,3),(4,1,4,4),(5,1,5,5),(6,1,6,6),(7,1,5,7),(8,1,6,8),(9,1,7,9),(10,1,8,10),(11,1,7,11),(12,1,8,1),(13,1,5,2),(14,1,6,3),(15,1,5,4),(16,1,6,5),(17,1,7,6),(18,1,8,7),(19,1,7,8),(20,1,8,9),(21,1,7,10),(22,1,8,1),(23,1,7,2),(24,1,8,3);
 /*!40000 ALTER TABLE `route` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -671,7 +620,7 @@ CREATE TABLE `routestop` (
   KEY `FK_StopDistrictID` (`StopDistrictID`),
   CONSTRAINT `FK_StopDistrictID` FOREIGN KEY (`StopDistrictID`) REFERENCES `district` (`DistrictID`),
   CONSTRAINT `routestop_ibfk_1` FOREIGN KEY (`RouteID`) REFERENCES `route` (`RouteID`)
-) ENGINE=InnoDB AUTO_INCREMENT=11 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=30 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -749,7 +698,7 @@ CREATE TABLE `ticket` (
   CONSTRAINT `ticket_ibfk_1` FOREIGN KEY (`TripID`) REFERENCES `trip` (`TripID`),
   CONSTRAINT `ticket_ibfk_2` FOREIGN KEY (`RouteStopID`) REFERENCES `routestop` (`RouteStopID`),
   CONSTRAINT `ticket_ibfk_3` FOREIGN KEY (`RouteID`) REFERENCES `route` (`RouteID`)
-) ENGINE=InnoDB AUTO_INCREMENT=11 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=26 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -758,7 +707,7 @@ CREATE TABLE `ticket` (
 
 LOCK TABLES `ticket` WRITE;
 /*!40000 ALTER TABLE `ticket` DISABLE KEYS */;
-INSERT INTO `ticket` VALUES (1,10,31,1,'111111111',1,1,1),(2,15,32,2,'222222222',2,2,2),(3,20,33,3,'333333333',3,3,3),(4,12,34,4,'444444444',4,4,4),(5,18,35,5,'555555555',5,5,5),(6,11,36,6,'666666666',6,6,6),(7,13,37,7,'777777777',7,7,7),(8,19,38,8,'888888888',8,8,8),(9,20,39,9,'999999999',9,9,9),(10,21,40,10,'000000000',10,10,10);
+INSERT INTO `ticket` VALUES (1,10,31,1,'111111111',1,1,1),(2,15,32,2,'222222222',2,2,1),(3,20,33,3,'333333333',3,3,2),(4,12,34,4,'444444444',4,4,2),(5,18,35,5,'555555555',5,5,3),(6,11,36,6,'666666666',6,6,3),(7,13,37,7,'777777777',7,7,4),(8,19,38,8,'888888888',8,8,4),(9,20,39,9,'999999999',9,9,5),(10,21,40,10,'000000000',10,10,5),(11,NULL,41,11,'123412345',11,11,8),(12,NULL,42,12,'234523456',12,12,9),(13,NULL,43,13,'456745678',13,13,10),(14,NULL,44,14,'567856789',14,14,11),(15,NULL,45,15,'678967890',15,15,12),(16,NULL,46,16,'135724680',16,16,13),(17,NULL,47,17,'090807060',17,17,14),(18,NULL,48,18,'010203040',18,18,15),(19,NULL,49,19,'050607080',19,19,16),(20,NULL,50,20,'020103040',20,20,17),(21,NULL,51,21,'001100223',21,21,18),(22,NULL,52,22,'003334445',22,22,19),(23,NULL,53,23,'010101022',23,23,20),(24,NULL,54,24,'020202033',24,24,21),(25,NULL,55,25,'055522211',1,25,22);
 /*!40000 ALTER TABLE `ticket` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -786,7 +735,7 @@ CREATE TABLE `trip` (
   CONSTRAINT `FK_RouteID` FOREIGN KEY (`RouteID`) REFERENCES `route` (`RouteID`),
   CONSTRAINT `trip_ibfk_1` FOREIGN KEY (`CoachID`) REFERENCES `coach` (`CoachID`),
   CONSTRAINT `trip_ibfk_2` FOREIGN KEY (`DriverID`) REFERENCES `coachemployee` (`CoachStaffId`)
-) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=25 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -795,33 +744,7 @@ CREATE TABLE `trip` (
 
 LOCK TABLES `trip` WRITE;
 /*!40000 ALTER TABLE `trip` DISABLE KEYS */;
--- INSERT INTO `trip` VALUES (1,50,45,5,1,1,1,'2023-01-15','08:00:00'),(2,35,20,15,2,2,2,'2023-02-20','09:30:00'),(3,35,35,0,3,3,3,'2023-03-25','11:00:00'),(4,50,35,15,4,4,4,'2023-04-10','12:45:00'),(5,50,40,10,5,5,5,'2023-05-05','14:30:00'),(6,50,50,0,6,6,5,'2023-06-25','14:30:00'),(7,35,35,0,7,7,4,'2023-07-05','12:45:00'),(8,35,35,0,8,8,3,'2023-08-22','08:00:00'),(9,35,35,0,9,9,2,'2023-09-15','11:00:00'),(10,50,50,0,10,24,1,'2023-10-15','08:00:00');
-INSERT INTO `trip` (`LimitOfSeat`, `NumberOfReservedSeat`, `NumberOfNoBookSeat`, `CoachID`, `RouteID`, `DriverID`, `Date_`, `Time_`)
-VALUES
-(50, 45, 5, 1, 1, 1, '2023-01-15', '08:00:00'),
-(35, 20, 15, 2, 2, 2, '2023-02-20', '09:30:00'),
-(35, 35, 0, 3, 3, 3, '2023-03-25', '11:00:00'),
-(50, 35, 15, 4, 4, 4, '2023-04-10', '12:45:00'),
-(50, 40, 10, 5, 5, 5, '2023-05-05', '14:30:00'),
-(50, 50, 0, 6, 6, 5, '2023-06-25', '14:30:00'),
-(35, 35, 0, 7, 6, 4, '2023-07-05', '12:45:00'),
-(35, 35, 0, 8, 8, 3, '2023-08-22', '08:00:00'),
-(35, 35, 0, 9, 8, 2, '2023-09-15', '11:00:00'),
-(50, 50, 0, 10, 8, 1, '2023-10-15', '08:00:00'),
-(50, 45, 5, 11, 11, 1, '2023-11-11', '08:30:00'),
-(35, 20, 15, 1, 12, 2, '2023-12-12', '10:00:00'),
-(50, 45, 5, 2, 13, 3, '2024-01-01', '09:00:00'),
-(35, 20, 15, 3, 14, 4, '2024-02-14', '11:30:00'),
-(35, 35, 0, 4, 15, 5, '2024-03-25', '13:00:00'),
-(50, 45, 5, 5, 15, 1, '2024-04-04', '14:30:00'),
-(35, 20, 15, 6, 15, 2, '2024-05-15', '16:00:00'),
-(50, 45, 5, 7, 15, 3, '2024-06-26', '17:30:00'),
-(35, 35, 0, 8, 19, 4, '2024-07-07', '18:45:00'),
-(50, 45, 5, 9, 20, 5, '2024-08-08', '20:00:00'),
-(35, 20, 15, 10, 21, 1, '2024-09-09', '21:15:00'),
-(50, 45, 5, 11, 22, 2, '2024-10-10', '22:30:00'),
-(35, 20, 15, 1, 23, 3, '2024-11-11', '23:45:00'),
-(50, 45, 5, 2, 24, 4, '2024-12-12', '00:00:00');
+INSERT INTO `trip` VALUES (1,50,45,5,1,1,1,'2023-01-15','08:00:00'),(2,35,20,15,2,2,2,'2023-02-20','09:30:00'),(3,35,35,0,3,3,3,'2023-03-25','11:00:00'),(4,50,35,15,4,4,4,'2023-04-10','12:45:00'),(5,50,40,10,5,5,5,'2023-05-05','14:30:00'),(6,50,50,0,6,6,5,'2023-06-25','14:30:00'),(7,35,35,0,7,6,4,'2023-07-05','12:45:00'),(8,35,35,0,8,8,3,'2023-08-22','08:00:00'),(9,35,35,0,9,8,2,'2023-09-15','11:00:00'),(10,50,50,0,10,8,1,'2023-10-15','08:00:00'),(11,50,45,5,11,11,1,'2023-11-11','08:30:00'),(12,35,20,15,1,12,2,'2023-12-12','10:00:00'),(13,50,45,5,2,13,3,'2024-01-01','09:00:00'),(14,35,20,15,3,14,4,'2024-02-14','11:30:00'),(15,35,35,0,4,15,5,'2024-03-25','13:00:00'),(16,50,45,5,5,15,1,'2024-04-04','14:30:00'),(17,35,20,15,6,15,2,'2024-05-15','16:00:00'),(18,50,45,5,7,15,3,'2024-06-26','17:30:00'),(19,35,35,0,8,19,4,'2024-07-07','18:45:00'),(20,50,45,5,9,20,5,'2024-08-08','20:00:00'),(21,35,20,15,10,21,1,'2024-09-09','21:15:00'),(22,50,45,5,11,22,2,'2024-10-10','22:30:00'),(23,35,20,15,1,23,3,'2024-11-11','23:45:00'),(24,50,45,5,2,24,4,'2024-12-12','00:00:00');
 /*!40000 ALTER TABLE `trip` ENABLE KEYS */;
 UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
@@ -834,7 +757,7 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2023-12-06 21:14:12
+-- Dump completed on 2023-12-08 23:03:39
 
 -- Tạo thủ tục tìm kiếm chuyến đi
 DROP PROCEDURE IF EXISTS information_trip; -- Xóa procedure information_trip nếu tồn tại
