@@ -397,6 +397,7 @@ CREATE TABLE `invoice` (
   `PassengerSSN` varchar(20) DEFAULT NULL,
   `Date` date DEFAULT NULL,
   `Time` time DEFAULT NULL,
+  `TotalAmount` decimal(10,2) DEFAULT 0,
   PRIMARY KEY (`InvoiceID`),
   KEY `PassengerSSN` (`PassengerSSN`),
   KEY `FK_AccountID_Invoice` (`AccountID`),
@@ -411,7 +412,7 @@ CREATE TABLE `invoice` (
 
 LOCK TABLES `invoice` WRITE;
 /*!40000 ALTER TABLE `invoice` DISABLE KEYS */;
-INSERT INTO `invoice` VALUES (1,'ABC123',31,'111111111','2023-01-01','10:30:00'),(2,'XYZ456',32,'222222222','2023-02-15','12:45:00'),(3,'123DEF',33,'333333333','2023-03-20','15:00:00'),(4,'456GHI',34,'444444444','2023-04-10','14:30:00'),(5,'789JKL',35,'555555555','2023-05-25','11:00:00'),(6,'123FEE',36,'666666666','2023-06-20','15:11:00'),(7,'245WEF',37,'777777777','2023-07-20','17:28:00'),(8,'332KTO',38,'888888888','2023-08-20','19:30:00'),(9,'947JRK',39,'999999999','2023-09-20','08:13:00'),(10,'221RIE',40,'000000000','2023-10-20','09:22:00'),(11,'432FWE',41,'123412345','2023-11-20','11:11:00'),(12,'422WQD',42,'234523456','2023-12-20','12:12:00'),(13,'643EQD',43,'456745678','2023-01-21','07:07:00'),(14,'213GEG',44,'567856789','2023-02-21','08:08:00'),(15,'322GQE',45,'678967890','2023-03-21','09:09:00'),(16,'932RFF',46,'135724680','2023-04-21','10:10:00'),(17,'485GER',47,'090807060','2023-05-21','13:13:00'),(18,'944GEG',48,'010203040','2023-06-21','14:14:00'),(19,'320FBB',49,'050607080','2023-07-21','15:15:00'),(20,'410FWB',50,'020103040','2023-08-21','16:16:00'),(21,'7439MFK',51,'001100223','2023-09-21','17:17:00'),(22,'429MFE',52,'003334445','2023-10-21','18:18:00'),(23,'810MFW',53,'010101022','2023-11-21','19:19:00'),(24,'043REE',54,'020202033','2023-12-21','20:20:00'),(25,'923FWF',55,'055522211','2024-01-01','19:30:00');
+INSERT INTO `invoice`(InvoiceID, TaxCode, AccountID, PassengerSSN, Date, Time) VALUES (1,'ABC123',31,'000000000','2023-01-01','10:30:00'),(2,'XYZ456',32,'111111111','2023-02-15','12:45:00'),(3,'123DEF',33,'222222222','2023-03-20','15:00:00'),(4,'456GHI',34,'333333333','2023-04-10','14:30:00'),(5,'789JKL',35,'444444444','2023-05-25','11:00:00'),(6,'123FEE',36,'555555555','2023-06-20','15:11:00'),(7,'245WEF',37,'666666666','2023-07-20','17:28:00'),(8,'332KTO',38,'777777777','2023-08-20','19:30:00'),(9,'947JRK',39,'888888888','2023-09-20','08:13:00'),(10,'2213IE',40,'999999999','2023-10-20','09:22:00');
 /*!40000 ALTER TABLE `invoice` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -842,3 +843,50 @@ BEGIN
 END $$
 
 DELIMITER ;
+
+
+-- TEST TRIGGER 1==============================================================================
+-- UPDATE trip
+-- SET NumberOfReservedSeat = 15
+-- WHERE TripID = 1;
+
+
+-- UPDATE trip
+-- SET NumberOfReservedSeat = 15
+-- WHERE TripID = 1;
+
+
+-- UPDATE trip
+-- SET NumberOfReservedSeat = 40
+-- WHERE TripID = 1;
+
+
+
+-- TRIGGER 2====================================================================================
+
+DELIMITER //
+
+CREATE TRIGGER updateTotalAmount BEFORE INSERT ON ticket
+FOR EACH ROW
+BEGIN
+  DECLARE route_cost DECIMAL(10, 2);
+
+  -- Lấy giá trị Cost từ bảng routestop
+  SELECT Cost INTO route_cost
+  FROM routestop
+  WHERE RouteStopID = NEW.RouteStopID AND RouteID = NEW.RouteID;
+
+  -- Nếu tìm thấy giá trị Cost, cập nhật TotalAmount trong bảng invoice
+  IF route_cost IS NOT NULL THEN
+    UPDATE invoice
+    SET TotalAmount = TotalAmount + route_cost
+    WHERE InvoiceID = NEW.InvoiceID;
+  END IF;
+END;
+
+//
+DELIMITER ;
+
+-- TEST TRIGGER 2 =======================================================================
+-- INSERT INTO `ticket` (SeatNumber, AccountID, InvoiceID, PassengerSSN, TripID, RouteStopID, RouteID) VALUES(1, 31, 1, 111111111, 1, 2, 1);
+-- INSERT INTO `ticket` (SeatNumber, AccountID, InvoiceID, PassengerSSN, TripID, RouteStopID, RouteID) VALUES(1, 32, 2, 222222222, 2, 4, 2);
