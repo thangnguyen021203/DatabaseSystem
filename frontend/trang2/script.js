@@ -133,10 +133,9 @@ $("#provinceEnd").change(function () {
   });
 });
 
-$("#filterCompany").change(function () {
-  var selectedCompanyName = $("#filterCompany").val();
+function coachtype() {
   $.ajax({
-    url: `../../backend/trang2/coachtype.php?CoachCompanyName='${selectedCompanyName}'`,
+    url: `../../backend/trang2/coachtype.php`,
     type: "GET",
     dataType: "json",
     success: function (strdata) {
@@ -153,7 +152,7 @@ $("#filterCompany").change(function () {
       }
     },
   });
-});
+};
 
 function searchTrip() {
   var formData = {
@@ -248,7 +247,6 @@ function deleteTrip(id) {
     data: {tripId:id},
     success: function (strdata) {
       searchTrip();
-      alert("Xóa thành công");
     },
   });
 }
@@ -258,6 +256,7 @@ $(document).ready(function () {
   turnOffModifyForm();
   chooseProvince();
   chooseCoachCompany();
+  coachtype();
 });
 
 function tableAfterCreate() {

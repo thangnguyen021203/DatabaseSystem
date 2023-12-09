@@ -8,8 +8,7 @@ $conn = $database->getConnection();
 
 // Ensure that the request method is GET
 if ($_SERVER['REQUEST_METHOD'] === 'GET') {
-    $CoachCompanyName=$_GET["CoachCompanyName"];
-    $query = "SELECT DISTINCT CoachType FROM coach INNER JOIN coachcompany ON coach.CoachCompanyID = coachcompany.CoachCompanyID WHERE coachcompany.CoachCompanyName=$CoachCompanyName";
+    $query = "SELECT DISTINCT CoachType FROM coach";
     $result = $conn->query($query);
     if ($result) {
         $coachtype = array();
