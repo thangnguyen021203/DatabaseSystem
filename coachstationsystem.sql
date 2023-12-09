@@ -397,7 +397,7 @@ CREATE TABLE `invoice` (
   `PassengerSSN` varchar(20) DEFAULT NULL,
   `Date` date DEFAULT NULL,
   `Time` time DEFAULT NULL,
-  `TotalAmount` decimal(10,2) DEFAULT 0.00,
+  `TotalAmount` decimal(10,2) DEFAULT 0,
   PRIMARY KEY (`InvoiceID`),
   KEY `PassengerSSN` (`PassengerSSN`),
   KEY `FK_AccountID_Invoice` (`AccountID`),
@@ -412,7 +412,7 @@ CREATE TABLE `invoice` (
 
 LOCK TABLES `invoice` WRITE;
 /*!40000 ALTER TABLE `invoice` DISABLE KEYS */;
-INSERT INTO `invoice` VALUES (1,'ABC123',31,'000000000','2023-01-01','10:30:00',50000.00),(2,'XYZ456',32,'111111111','2023-02-15','12:45:00',70000.00),(3,'123DEF',33,'222222222','2023-03-20','15:00:00',80000.00),(4,'456GHI',34,'333333333','2023-04-10','14:30:00',100000.00),(5,'789JKL',35,'444444444','2023-05-25','11:00:00',90000.00),(6,'123FEE',36,'555555555','2023-06-20','15:11:00',60000.00),(7,'245WEF',37,'666666666','2023-07-20','17:28:00',100000.00),(8,'332KTO',38,'777777777','2023-08-20','19:30:00',95000.00),(9,'947JRK',39,'888888888','2023-09-20','08:13:00',120000.00),(10,'2213IE',40,'999999999','2023-10-20','09:22:00',110000.00);
+INSERT INTO `invoice`(InvoiceID, TaxCode, AccountID, PassengerSSN, Date, Time) VALUES (1,'ABC123',31,'000000000','2023-01-01','10:30:00'),(2,'XYZ456',32,'111111111','2023-02-15','12:45:00'),(3,'123DEF',33,'222222222','2023-03-20','15:00:00'),(4,'456GHI',34,'333333333','2023-04-10','14:30:00'),(5,'789JKL',35,'444444444','2023-05-25','11:00:00'),(6,'123FEE',36,'555555555','2023-06-20','15:11:00'),(7,'245WEF',37,'666666666','2023-07-20','17:28:00'),(8,'332KTO',38,'777777777','2023-08-20','19:30:00'),(9,'947JRK',39,'888888888','2023-09-20','08:13:00'),(10,'2213IE',40,'999999999','2023-10-20','09:22:00');
 /*!40000 ALTER TABLE `invoice` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -758,4 +758,252 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2023-12-09 21:25:43
+-- Dump completed on 2023-12-08 23:03:39
+
+
+-- 2.1 TẠO THỦ TỤC INSERT-------------------------------------
+DROP PROCEDURE IF EXISTS insert_coachcompany; 
+DELIMITER $$
+CREATE PROCEDURE insert_coachcompany
+	(IN p_docg DATE,
+    IN p_edoc DATE,
+    IN p_ccname VARCHAR(255),
+    IN p_status VARCHAR(255) )
+BEGIN
+	-- -----
+   if p_docg > current_date() then 
+	set @r = 'Ngày đăng ký không hợp lệ';
+   signal sqlstate '45001' set message_text = @r;
+   end if;
+   -- ---
+	if year(p_edoc) - year(p_docg) >  5 then 
+   set @raiserror = 'Ngày hết hạn hợp đồng vượt quá 5 năm';
+   signal sqlstate '45001' set message_text = @raiserror;
+   end if;
+   -- -----
+   if p_status != 'Action' or p_status != 'Not Action' then 
+   set @ra = 'Status không hợp lê';
+   signal sqlstate '45001' set message_text = @ra;
+   end if;
+   INSERT INTO coachcompany (DateOfContractRegistration, EndDateOfContract, CoachCompanyName, Status)
+   VALUES (p_docg, p_edoc, p_ccname,p_status);
+   COMMIT;
+END $$
+DELIMITER ;
+
+-- CALL insert_coachcompany ("2020-11-18", "2022-11-18", "Trọng Khôi", "Action"); 
+
+-- TẠO THỦ TỤC UPDATE-------------------------------------
+DROP PROCEDURE IF EXISTS update_coachcompany; 
+DELIMITER $$
+CREATE PROCEDURE update_coachcompany
+	(IN p_ccid INT ,
+    IN p_docg DATE,
+    IN p_edoc DATE,
+    IN p_ccname VARCHAR(255),
+    IN p_status VARCHAR(255) )
+BEGIN
+	declare count int ;
+    SELECT COUNT(*) INTO count
+	FROM coachcompany
+	WHERE CoachCompanyID = p_ccid;
+	if p_docg > current_date() then 
+	set @a = 'Ngày đăng ký không hợp lệ';
+   signal sqlstate '45001' set message_text = @a;
+   end if;
+   -- ---
+	if year(p_edoc) - year(p_docg) >  5 then 
+   set @b = 'Ngày hết hạn hợp đồng vượt quá 5 năm';
+   signal sqlstate '45001' set message_text = @b;
+   end if;
+   -- -----
+   if p_status != 'Action' and   p_status != 'Not Action'  then 
+   set @c = 'Status không hợp lê';
+   signal sqlstate '45001' set message_text = @c;
+   end if;
+   if count = 1 then
+    update coachcompany
+    set DateOfContractRegistration = p_docg,
+		CoachCompanyID = p_ccid,
+		EndDateOfContract = p_edoc,
+        CoachCompanyName = p_ccname,
+        Status = p_status 
+	Where CoachCompanyID = p_ccid;
+    else 
+    set @d = 'Không tìm thấy id';
+    signal sqlstate '45001' set message_text = @d;
+    end if;
+    commit;
+    
+END $$
+DELIMITER ;
+-- call update_coachcompany("1","2022-01-01","2025-02-02","Hải Dưới","Not Action");
+
+-- TẠO THỦ TỤC DELETE-------------------------------------------
+DROP PROCEDURE IF EXISTS delete_emailpassanger; 
+DELIMITER $$
+CREATE PROCEDURE delete_emailpassanger
+	(IN p_ssnpass varchar(225)  )
+BEGIN
+   DELETE FROM emailpassenger
+   WHERE PassengerSSN = p_ssnpass;
+END;
+-- call delete_emailpassanger("888888888");
+    
+
+
+-- 2.2. TRIGGER 1===================================================================================
+
+DELIMITER //
+
+CREATE TRIGGER remainTicket BEFORE UPDATE ON trip
+FOR EACH ROW
+BEGIN
+  DECLARE oldReservedSeat INT;
+
+  -- Lưu trữ giá trị cũ của NumberOfReservedSeat
+    SET oldReservedSeat = OLD.NumberOfReservedSeat;
+  IF NEW.LimitOfSeat >= NEW.NumberOfReservedSeat THEN    
+    -- Cập nhật NumberOfNoBookSeat nếu giới hạn hợp lệ
+    SET NEW.NumberOfNoBookSeat = NEW.LimitOfSeat - NEW.NumberOfReservedSeat;
+  ELSE
+    -- Nếu giới hạn không hợp lệ, giữ nguyên giá trị cũ của NumberOfReservedSeat
+    SET NEW.NumberOfReservedSeat = oldReservedSeat;
+  END IF;
+END;
+
+//
+DELIMITER ;
+
+
+-- TEST TRIGGER 1==============================================================================
+-- UPDATE trip
+-- SET NumberOfReservedSeat = 15
+-- WHERE TripID = 1;
+
+
+-- UPDATE trip
+-- SET NumberOfReservedSeat = 15
+-- WHERE TripID = 1;
+
+
+-- UPDATE trip
+-- SET NumberOfReservedSeat = 40
+-- WHERE TripID = 1;
+
+
+
+-- TRIGGER 2====================================================================================
+
+DELIMITER //
+
+CREATE TRIGGER updateTotalAmount BEFORE INSERT ON ticket
+FOR EACH ROW
+BEGIN
+  DECLARE route_cost DECIMAL(10, 2);
+
+  -- Lấy giá trị Cost từ bảng routestop
+  SELECT Cost INTO route_cost
+  FROM routestop
+  WHERE RouteStopID = NEW.RouteStopID AND RouteID = NEW.RouteID;
+
+  -- Nếu tìm thấy giá trị Cost, cập nhật TotalAmount trong bảng invoice
+  IF route_cost IS NOT NULL THEN
+    UPDATE invoice
+    SET TotalAmount = TotalAmount + route_cost
+    WHERE InvoiceID = NEW.InvoiceID;
+  END IF;
+END;
+
+//
+DELIMITER ;
+
+-- TEST TRIGGER 2 =======================================================================
+-- INSERT INTO `ticket` (SeatNumber, AccountID, InvoiceID, PassengerSSN, TripID, RouteStopID, RouteID) VALUES(1, 31, 1, 111111111, 1, 2, 1);
+-- INSERT INTO `ticket` (SeatNumber, AccountID, InvoiceID, PassengerSSN, TripID, RouteStopID, RouteID) VALUES(1, 32, 2, 222222222, 2, 4, 2);
+
+
+-- 2.3. THỦ TỤC =======================================================================
+-- Tạo thủ tục tìm kiếm chuyến đi
+DROP PROCEDURE IF EXISTS information_trip; -- Xóa procedure information_trip nếu tồn tại
+DELIMITER $$
+
+CREATE PROCEDURE information_trip(
+    IN start_district VARCHAR(255),
+    IN start_province VARCHAR(255),
+    IN end_district VARCHAR(255),
+    IN end_province VARCHAR(255),
+    IN start_date DATE,
+    IN start_time TIME,
+    IN end_date DATE,
+    IN end_time TIME,
+    IN company_name VARCHAR(255),
+    IN coach_type VARCHAR(255)
+)
+BEGIN
+    CREATE TEMPORARY TABLE IF NOT EXISTS route_matching AS (
+        SELECT DISTINCT R.RouteID, RS.Cost
+        FROM route R
+        INNER JOIN routestop RS ON R.RouteID = RS.RouteID
+        INNER JOIN district D1 ON R.StartDistrictID = D1.DistrictID
+        INNER JOIN province_city P1 ON D1.ProvinceID = P1.ProvinceID
+        INNER JOIN district D2 ON RS.StopDistrictID = D2.DistrictID
+        INNER JOIN province_city P2 ON D2.ProvinceID = P2.ProvinceID
+        WHERE D1.DistrictName = start_district AND P1.ProvinceCityName = start_province
+            AND ((D2.DistrictName = end_district AND P2.ProvinceCityName = end_province) )
+    );
+    
+    SELECT DISTINCT T.TripID, CoC.CoachCompanyName, C.CoachType, T.Time_,T.Date_, RM.Cost, (T.LimitOfSeat - T.NumberOfReservedSeat) AS RemainingNoTicket
+    FROM CoachCompany CoC
+    INNER JOIN Coach C ON CoC.CoachCompanyID = C.CoachCompanyID
+    INNER JOIN Trip T ON C.CoachID = T.CoachID
+    INNER JOIN route_matching RM ON T.RouteID = RM.RouteID
+    WHERE T.LimitOfSeat > T.NumberOfReservedSeat
+        AND (company_name ='' OR CoC.CoachCompanyName = company_name)
+        AND (coach_type ='' OR C.CoachType = coach_type)
+        AND T.Date_ >= start_date AND T.Date_ <= end_date
+        AND (
+            T.Date_ > start_date AND T.Date_< end_date
+            OR ((T.Date_ = start_date AND T.Date_ = end_date AND T.Time_ >= start_time AND T.Time_ <= end_time) OR (T.Date_ = start_date AND T.Time_ >= start_time) OR (T.Date_ = end_date AND T.Time_ <= end_time))
+        )
+    ORDER BY RM.Cost;
+
+    DROP TEMPORARY TABLE IF EXISTS route_matching;
+END $$
+
+DELIMITER ;
+
+-- Tạo thủ tục tìm tuyến đường có nhiều hành khách đi nhất
+DROP PROCEDURE IF EXISTS max_ticket_of_route; -- Xóa procedure max_ticket_of_route nếu tồn tại
+DELIMITER $$
+
+CREATE PROCEDURE max_ticket_of_route(
+    IN start_day DATE,
+    IN end_day DATE
+)
+BEGIN
+    -- Create a temporary table to store the count of tickets
+    CREATE TEMPORARY TABLE IF NOT EXISTS count_ticket AS (
+        SELECT R.RouteID, COUNT(Ti.TicketID) AS no_ticket
+        FROM trip T
+        INNER JOIN route R ON R.RouteID = T.RouteID
+        INNER JOIN ticket Ti ON T.TripID = Ti.TripID
+        WHERE Ti.PassengerSSN IS NOT NULL AND T.Date_ BETWEEN start_day AND end_day
+        GROUP BY R.RouteID
+    );
+
+    -- Select the route with the maximum ticket count
+    SELECT R.RouteID, COUNT(Ti.TicketID) AS max_ticketcount
+    FROM trip T
+    INNER JOIN route R ON R.RouteID = T.RouteID
+    INNER JOIN ticket Ti ON T.TripID = Ti.TripID
+    WHERE Ti.PassengerSSN IS NOT NULL AND T.Date_ BETWEEN start_day AND end_day
+    GROUP BY R.RouteID
+    HAVING COUNT(Ti.TicketID) = (SELECT MAX(no_ticket) FROM count_ticket)
+    ORDER BY R.RouteID;
+
+    -- Drop the temporary table
+    DROP TEMPORARY TABLE IF EXISTS count_ticket;
+END $$
+
+DELIMITER ;
