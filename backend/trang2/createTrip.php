@@ -37,6 +37,14 @@ if (!$result->fetch_assoc()) {
     exit();
 }
 
+$query = "SELECT * FROM coach WHERE CoachID ='$tripCoachId' AND NumberOfSeat>='$tripLimitSeat';";
+$result = $conn->query($query);
+if (!$result->fetch_assoc()) {
+    $errors = array('success' => false, 'errors' => 'Số lượng chỗ ngồi quá số lượng cho phép');
+    echo json_encode($errors);
+    exit();
+}
+
 $query = "INSERT INTO trip (LimitOfSeat,CoachID,RouteID,DriverID,Date_,Time_)
     VALUES ('$tripLimitSeat', '$tripCoachId', '$tripRouteId', '$tripDiverID', '$day', '$time');";
 $result = $conn->query($query);

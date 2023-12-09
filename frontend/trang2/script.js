@@ -231,7 +231,7 @@ function modifyTrip() {
       if (strdata.success) {
         turnOffModifyForm();
         searchTrip();
-        $("#formCreate").trigger("reset");
+        $("#formModify").trigger("reset");
       } else {
         alert(strdata.errors);
       }
