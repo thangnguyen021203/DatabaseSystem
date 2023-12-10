@@ -806,7 +806,7 @@ BEGIN
    signal sqlstate '45001' set message_text = @raiserror;
    end if;
    -- -----
-  if p_status != 'Active' or p_status != 'Not Active' then 
+  if p_status != 'Active' and p_status != 'Not Active' then 
    set @ra = 'Status không hợp lê';
    signal sqlstate '45001' set message_text = @ra;
    end if;
