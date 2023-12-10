@@ -781,12 +781,12 @@ BEGIN
     signal sqlstate '45001' set message_text = @r;
   end if;
 
-  if p_ccname IS NULL then
+  if p_ccname IS NULL || p_ccname = '' then
     set @r = 'Vui lòng nhập tên công ty.';
     signal sqlstate '45001' set message_text = @r;
   end if;
 
-  if p_status IS NULL then
+  if p_status IS NULL || p_status = '' then
     set @r = 'Vui lòng nhập id.';
     signal sqlstate '45001' set message_text = @r;
   end if;
@@ -830,7 +830,7 @@ CREATE PROCEDURE update_coachcompany
     IN p_status VARCHAR(255))
 BEGIN
 	declare count int ;
-  if p_ccid IS NULL then
+  if p_ccid IS NULL || p_status = ''then
     set @r = 'Vui lòng nhập id.';
     signal sqlstate '45001' set message_text = @r;
   end if;
@@ -840,19 +840,19 @@ BEGIN
     signal sqlstate '45001' set message_text = @r;
   end if;
 
-  if p_docg IS NULL then
+  if p_docg IS NULL || p_docg = '' then
     Select DateOfContractRegistration INTO p_docg FROM coachcompany Where CoachCompanyID = p_ccid;
   end if;
 
-  if p_edoc IS NULL then
+  if p_edoc IS NULL || p_edoc = '' then
     Select EndDateOfContract INTO p_edoc FROM coachcompany Where CoachCompanyID = p_ccid;
   end if;
 
-  if p_ccname IS NULL then
+  if p_ccname IS NULL || p_ccname = '' then
     Select CoachCompanyName INTO p_ccname FROM coachcompany Where CoachCompanyID = p_ccid;
   end if;
   
-  if p_status IS NULL then
+  if p_status IS NULL || p_status = '' then
     Select Status INTO p_status FROM coachcompany Where CoachCompanyID = p_ccid;
   end if;
   -- ---
@@ -895,7 +895,7 @@ DELIMITER $$
 CREATE PROCEDURE delete_coachcompany
     (IN p_ccid INT)
 BEGIN
-  if p_ccid IS NULL then
+  if p_ccid IS NULL || p_ccid = '' then
     set @r = 'Vui lòng nhập id.';
     signal sqlstate '45001' set message_text = @r;
   end if;
