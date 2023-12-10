@@ -1018,9 +1018,9 @@ BEGIN
     );
     
     SELECT DISTINCT T.TripID, CoC.CoachCompanyName, C.CoachType, T.Time_,T.Date_, RM.Cost, (T.LimitOfSeat - T.NumberOfReservedSeat) AS RemainingNoTicket
-    FROM CoachCompany CoC
-    INNER JOIN Coach C ON CoC.CoachCompanyID = C.CoachCompanyID
-    INNER JOIN Trip T ON C.CoachID = T.CoachID
+    FROM coachcompany CoC
+    INNER JOIN coach C ON CoC.CoachCompanyID = C.CoachCompanyID
+    INNER JOIN trip T ON C.CoachID = T.CoachID
     INNER JOIN route_matching RM ON T.RouteID = RM.RouteID
     WHERE T.LimitOfSeat > T.NumberOfReservedSeat
         AND (company_name ='' OR CoC.CoachCompanyName = company_name)

@@ -71,30 +71,107 @@
     </nav>
 
     <main class="p-3">
-      <h2 class="text-danger-emphasis mb-3">Thêm, xóa, sửa bảng dữ liệu ...</h2>
+      <h2 class="text-danger-emphasis mb-3">Thêm, xóa, sửa bảng dữ liệu</h2>
       <div class="row">
         <div class="col">
-          <form>
+          <nav class="p-3">
+            <ul
+              class="nav nav-pills nav-fill gap-2 p-1 small bg-success rounded-5 shadow-sm"
+              id="pillNav2"
+              role="tablist"
+              style="
+                --bs-nav-link-color: var(--bs-white);
+                --bs-nav-pills-link-active-color: var(--bs-success);
+                --bs-nav-pills-link-active-bg: var(--bs-white);
+              "
+            >
+              <li class="nav-item" role="presentation">
+                <button
+                  class="nav-link active rounded-5"
+                  id="home-tab2"
+                  data-bs-toggle="tab"
+                  type="button"
+                  role="tab"
+                  aria-selected="true"
+                  onclick="add();"
+                >
+                  Add
+                </button>
+              </li>
+              <li class="nav-item" role="presentation">
+                <button
+                  class="nav-link rounded-5"
+                  id="profile-tab2"
+                  data-bs-toggle="tab"
+                  type="button"
+                  role="tab"
+                  aria-selected="false"
+                  onclick="modify();"
+                >
+                  Modify
+                </button>
+              </li>
+              <li class="nav-item" role="presentation">
+                <button
+                  class="nav-link rounded-5"
+                  id="contact-tab2"
+                  data-bs-toggle="tab"
+                  type="button"
+                  role="tab"
+                  aria-selected="false"
+                  onclick="deletee();"
+                >
+                  Delete
+                </button>
+              </li>
+            </ul>
+          </nav>
+          <form id="formCoachCompany">
             <div class="mb-3">
-              <label for="Attribute 1" class="form-label">Attribute 1</label>
-              <input type="text" class="form-control" id="Attribute 1" />
+              <label for="CoachCompanyID" class="form-label fw-bold modify delete" style="display:none">CoachCompanyID</label>
+              <input type="text" class="form-control modify delete" id="CoachCompanyID" name="CoachCompanyID" style="display:none"/>
             </div>
             <div class="mb-3">
-              <label for="Attribute 2" class="form-label">Attribute 2</label>
-              <input type="text" class="form-control" id="Attribute 2" />
+              <label for="DateOfContractRegistration" class="form-label fw-bold add modify">DateOfContractRegistration</label>
+              <input type="text" class="form-control add modify" id="DateOfContractRegistration" name="DateOfContractRegistration"/>
+            </div>
+            <div class="mb-3">
+              <label for="EndDateOfContract" class="form-label fw-bold add modify">EndDateOfContract</label>
+              <input type="text" class="form-control add modify" id="EndDateOfContract" name="EndDateOfContract"/>
+            </div>
+            <div class="mb-3">
+              <label for="CoachCompanyName" class="form-label fw-bold add modify">CoachCompanyName</label>
+              <input type="text" class="form-control add modify" id="CoachCompanyName" name="CoachCompanyName"/>
+            </div>
+            <div class="mb-3">
+              <label for="Status" class="form-label fw-bold add modify">Status</label>
+              <input type="text" class="form-control add modify" id="Status" name="Status"/>
             </div>
             <div class="d-flex justify-content-around">
-              <button type="submit" class="btn btn-success">Add</button>
-              <button type="submit" class="btn btn-warning">Modify</button>
-              <button type="submit" class="btn btn-danger">Delete</button>
+              <button type="button" class="btn btn-primary add" onclick="addCoachCompany();">Submit</button>
+              <button type="button" class="btn btn-primary modify" style="display:none" onclick="modifyCoachCompany();">Submit</button>
+              <button type="button" class="btn btn-primary delete" style="display:none" onclick="deleteCoachCompany();">Submit</button>
             </div>
           </form>
         </div>
 
         
         <div class="col-8 m-3 ps-5">
-          <h2>Bảng ...</h2>
-          <table id="result" class="table"></table>
+          <h2>Bảng CoachCompany</h2>
+            <table class="table table-striped">
+              <thead>
+                <tr>
+                  <th scope="col">CoachCompanyID</th>
+                  <th scope="col">DateOfContractRegistration</th>
+                  <th scope="col">EndDateOfContract</th>
+                  <th scope="col">CoachCompanyName</th>
+                  <th scope="col">Status</th>
+                </tr>
+              </thead>
+              <tbody id="result">
+              </tbody>
+            </table>
+          </table>
         </div>
       </div>
     </main>
