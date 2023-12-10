@@ -30,6 +30,7 @@ function showCoachCompany() {
 function addCoachCompany() {
   if (checkFormCreate()) {
     var data = $("#formCoachCompany").serialize();
+
     $.ajax({
       url: "../../backend/trang1/index.php",
       type: "POST",
