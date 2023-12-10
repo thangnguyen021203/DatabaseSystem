@@ -830,7 +830,7 @@ CREATE PROCEDURE update_coachcompany
     IN p_status VARCHAR(255))
 BEGIN
 	declare count int ;
-  if p_ccid IS NULL || p_status = ''then
+  if p_ccid IS NULL || p_ccid = ''then
     set @r = 'Vui lòng nhập id.';
     signal sqlstate '45001' set message_text = @r;
   end if;
