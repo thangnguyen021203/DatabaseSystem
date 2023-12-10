@@ -891,6 +891,7 @@ DELIMITER ;
 -- call update_coachcompany("1","2022-01-01","2025-02-02","Hải Dưới","Not Active");
 
 -- TẠO THỦ TỤC DELETE-------------------------------------------
+DROP PROCEDURE IF EXISTS delete_coachcompany;
 DELIMITER $$
 CREATE PROCEDURE delete_coachcompany
     (IN p_ccid INT)
@@ -1023,8 +1024,8 @@ BEGIN
     INNER JOIN trip T ON C.CoachID = T.CoachID
     INNER JOIN route_matching RM ON T.RouteID = RM.RouteID
     WHERE T.LimitOfSeat > T.NumberOfReservedSeat
-        AND (company_name ='' OR CoC.CoachCompanyName = company_name)
-        AND (coach_type ='' OR C.CoachType = coach_type)
+        AND (company_name ='' OR company_name = NULL OR CoC.CoachCompanyName = company_name)
+        AND (coach_type ='' OR coach_type = NULL OR C.CoachType = coach_type)
         AND T.Date_ >= start_date AND T.Date_ <= end_date
         AND (
             T.Date_ > start_date AND T.Date_< end_date
