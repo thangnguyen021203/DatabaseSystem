@@ -199,7 +199,7 @@ CREATE TABLE `coachcompany` (
   `DateOfContractRegistration` date DEFAULT NULL,
   `EndDateOfContract` date DEFAULT NULL,
   `CoachCompanyName` varchar(255) DEFAULT NULL,
-  `Status` varchar(255) DEFAULT NULL CHECK (`Status` in ('Action','Not Action')),
+  `Status` varchar(255) DEFAULT NULL CHECK (`Status` in ('Active','Not Active')),
   PRIMARY KEY (`CoachCompanyID`)
 ) ENGINE=InnoDB AUTO_INCREMENT=12 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
@@ -210,7 +210,7 @@ CREATE TABLE `coachcompany` (
 
 LOCK TABLES `coachcompany` WRITE;
 /*!40000 ALTER TABLE `coachcompany` DISABLE KEYS */;
-INSERT INTO `coachcompany` VALUES (1,'2022-01-01','2026-12-31','Phương Trang','Action'),(2,'2022-02-01','2024-11-30','Hoàng Long','Action'),(3,'2022-03-01','2022-10-31','Mai Linh','Not Action'),(4,'2022-04-01','2025-09-30','Thành Bưởi','Action'),(5,'2022-05-01','2022-08-31','Minh Thành Phát','Not Action'),(6,'2022-11-18','2025-11-18','Văn Minh','Action'),(7,'2023-01-01','2026-01-01','Kumho Samco','Action'),(8,'2023-12-24','2025-12-24','Kim Hoàng','Action'),(9,'2023-11-12','2025-11-12','Tuấn Hưng','Action'),(10,'2023-08-09','2025-08-09','Hùng Cường','Action'),(11,'2024-01-01','2026-01-01','Hoàng Nga','Action');
+INSERT INTO `coachcompany` VALUES (1,'2022-01-01','2026-12-31','Phương Trang','Active'),(2,'2022-02-01','2024-11-30','Hoàng Long','Active'),(3,'2022-03-01','2022-10-31','Mai Linh','Not Active'),(4,'2022-04-01','2025-09-30','Thành Bưởi','Active'),(5,'2022-05-01','2022-08-31','Minh Thành Phát','Not Active'),(6,'2022-11-18','2025-11-18','Văn Minh','Active'),(7,'2023-01-01','2026-01-01','Kumho Samco','Active'),(8,'2023-12-24','2025-12-24','Kim Hoàng','Active'),(9,'2023-11-12','2025-11-12','Tuấn Hưng','Active'),(10,'2023-08-09','2025-08-09','Hùng Cường','Active'),(11,'2024-01-01','2026-01-01','Hoàng Nga','Active');
 /*!40000 ALTER TABLE `coachcompany` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -412,7 +412,7 @@ CREATE TABLE `invoice` (
 
 LOCK TABLES `invoice` WRITE;
 /*!40000 ALTER TABLE `invoice` DISABLE KEYS */;
-INSERT INTO `invoice`(InvoiceID, TaxCode, AccountID, PassengerSSN, Date, Time) VALUES (1,'ABC123',31,'000000000','2023-01-01','10:30:00'),(2,'XYZ456',32,'111111111','2023-02-15','12:45:00'),(3,'123DEF',33,'222222222','2023-03-20','15:00:00'),(4,'456GHI',34,'333333333','2023-04-10','14:30:00'),(5,'789JKL',35,'444444444','2023-05-25','11:00:00'),(6,'123FEE',36,'555555555','2023-06-20','15:11:00'),(7,'245WEF',37,'666666666','2023-07-20','17:28:00'),(8,'332KTO',38,'777777777','2023-08-20','19:30:00'),(9,'947JRK',39,'888888888','2023-09-20','08:13:00'),(10,'2213IE',40,'999999999','2023-10-20','09:22:00');
+INSERT INTO `invoice`(InvoiceID, TaxCode, AccountID, PassengerSSN, Date, Time, TotalAmount) VALUES (1,'ABC123',31,'000000000','2023-01-01','10:30:00', 50000),(2,'XYZ456',32,'111111111','2023-02-15','12:45:00', 70000),(3,'123DEF',33,'222222222','2023-03-20','15:00:00', 80000),(4,'456GHI',34,'333333333','2023-04-10','14:30:00', 100000),(5,'789JKL',35,'444444444','2023-05-25','11:00:00', 90000),(6,'123FEE',36,'555555555','2023-06-20','15:11:00', 60000),(7,'245WEF',37,'666666666','2023-07-20','17:28:00', 100000),(8,'332KTO',38,'777777777','2023-08-20','19:30:00', 95000),(9,'947JRK',39,'888888888','2023-09-20','08:13:00', 120000),(10,'2213IE',40,'999999999','2023-10-20','09:22:00', 110000);
 /*!40000 ALTER TABLE `invoice` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -723,7 +723,7 @@ CREATE TABLE `trip` (
   `TripID` int(11) NOT NULL AUTO_INCREMENT,
   `LimitOfSeat` int(11) DEFAULT NULL,
   `NumberOfReservedSeat` int(11) DEFAULT 0,
-  `NumberOfNoBookSeat` int(11) DEFAULT NULL,
+  `NumberOfNoBookSeat` int(11) DEFAULT 0,
   `CoachID` int(11) DEFAULT NULL,
   `RouteID` int(11) DEFAULT NULL,
   `DriverID` int(11) DEFAULT NULL,
@@ -760,6 +760,234 @@ UNLOCK TABLES;
 
 -- Dump completed on 2023-12-08 23:03:39
 
+
+-- 2.1 TẠO THỦ TỤC INSERT-------------------------------------
+DROP PROCEDURE IF EXISTS insert_coachcompany; 
+DELIMITER $$
+CREATE PROCEDURE insert_coachcompany
+	(IN p_docg DATE,
+    IN p_edoc DATE,
+    IN p_ccname VARCHAR(255),
+    IN p_status VARCHAR(255))
+BEGIN
+
+  if p_docg IS NULL || p_docg = '' then
+    set @r = 'Vui lòng nhập ngày đăng ký hợp đồng.';
+    signal sqlstate '45001' set message_text = @r;
+  end if;
+
+  if p_edoc IS NULL || p_edoc = '' then
+    set @r = 'Vui lòng nhập ngày hết hạn hợp đồng.';
+    signal sqlstate '45001' set message_text = @r;
+  end if;
+
+  if p_ccname IS NULL then
+    set @r = 'Vui lòng nhập tên công ty.';
+    signal sqlstate '45001' set message_text = @r;
+  end if;
+
+  if p_status IS NULL then
+    set @r = 'Vui lòng nhập id.';
+    signal sqlstate '45001' set message_text = @r;
+  end if;
+
+  if current_date() > p_edoc then
+	set @r = 'Ngày hết hạn không hợp lệ';
+   signal sqlstate '45001' set message_text = @r;
+   end if;
+	-- -----
+  if p_docg > p_edoc then 
+	set @r = 'Ngày đăng ký không hợp lệ';
+   signal sqlstate '45001' set message_text = @r;
+   end if;
+   -- ---
+	if year(p_edoc) - year(p_docg) >  5 then 
+   set @raiserror = 'Ngày hết hạn hợp đồng vượt quá 5 năm';
+   signal sqlstate '45001' set message_text = @raiserror;
+   end if;
+   -- -----
+  if p_status != 'Active' or p_status != 'Not Active' then 
+   set @ra = 'Status không hợp lê';
+   signal sqlstate '45001' set message_text = @ra;
+   end if;
+   
+  INSERT INTO coachcompany (DateOfContractRegistration, EndDateOfContract, CoachCompanyName, Status)
+  VALUES (p_docg, p_edoc, p_ccname,p_status);
+   COMMIT;
+END $$
+DELIMITER ;
+
+-- CALL insert_coachcompany ("2020-11-18", "2022-11-18", "Trọng Khôi", "Active"); 
+
+-- TẠO THỦ TỤC UPDATE-------------------------------------
+DROP PROCEDURE IF EXISTS update_coachcompany; 
+DELIMITER $$
+CREATE PROCEDURE update_coachcompany
+	(IN p_ccid INT,
+    IN p_docg DATE,
+    IN p_edoc DATE,
+    IN p_ccname VARCHAR(255),
+    IN p_status VARCHAR(255))
+BEGIN
+	declare count int ;
+  if p_ccid IS NULL then
+    set @r = 'Vui lòng nhập id.';
+    signal sqlstate '45001' set message_text = @r;
+  end if;
+
+  if p_ccid NOT IN (SELECT CoachCompanyID FROM coachcompany) then
+    set @r = 'id không tồn tại.';
+    signal sqlstate '45001' set message_text = @r;
+  end if;
+
+  if p_docg IS NULL then
+    Select DateOfContractRegistration INTO p_docg FROM coachcompany Where CoachCompanyID = p_ccid;
+  end if;
+
+  if p_edoc IS NULL then
+    Select EndDateOfContract INTO p_edoc FROM coachcompany Where CoachCompanyID = p_ccid;
+  end if;
+
+  if p_ccname IS NULL then
+    Select CoachCompanyName INTO p_ccname FROM coachcompany Where CoachCompanyID = p_ccid;
+  end if;
+  
+  if p_status IS NULL then
+    Select Status INTO p_status FROM coachcompany Where CoachCompanyID = p_ccid;
+  end if;
+  -- ---
+  if current_date() > p_edoc then
+	set @r = 'Ngày hết hạn không hợp lệ';
+  signal sqlstate '45001' set message_text = @r;
+  end if;
+  -- ---
+  if p_docg > p_edoc then 
+	set @r = 'Ngày đăng ký không hợp lệ';
+  signal sqlstate '45001' set message_text = @r;
+  end if;
+   -- ---
+	if year(p_edoc) - year(p_docg) >  5 then 
+  set @b = 'Ngày hết hạn hợp đồng vượt quá 5 năm';
+  signal sqlstate '45001' set message_text = @b;
+  end if;
+   -- -----
+  if p_status != 'Active' and   p_status != 'Not Active'  then 
+  set @c = 'Status không hợp lê';
+  signal sqlstate '45001' set message_text = @c;
+  end if;
+   -- -----
+  update coachcompany
+  set DateOfContractRegistration = p_docg,
+	CoachCompanyID = p_ccid,
+	EndDateOfContract = p_edoc,
+  CoachCompanyName = p_ccname,
+  Status = p_status 
+	Where CoachCompanyID = p_ccid;
+
+  commit;
+    
+END $$
+DELIMITER ;
+-- call update_coachcompany("1","2022-01-01","2025-02-02","Hải Dưới","Not Active");
+
+-- TẠO THỦ TỤC DELETE-------------------------------------------
+DELIMITER $$
+CREATE PROCEDURE delete_coachcompany
+    (IN p_ccid INT)
+BEGIN
+  if p_ccid IS NULL then
+    set @r = 'Vui lòng nhập id.';
+    signal sqlstate '45001' set message_text = @r;
+  end if;
+
+  if p_ccid NOT IN (SELECT CoachCompanyID FROM coachcompany) then
+    set @r = 'id không tồn tại.';
+    signal sqlstate '45001' set message_text = @r;
+  end if;
+
+  update coachcompany SET status = 'Not Active' Where CoachCompanyID = p_ccid;
+
+  COMMIT;
+END;
+$$
+DELIMITER ;
+
+-- call delete_emailpassanger("888888888");
+    
+
+
+-- 2.2. TRIGGER 1===================================================================================
+
+DELIMITER //
+
+CREATE TRIGGER remainTicket BEFORE UPDATE ON trip
+FOR EACH ROW
+BEGIN
+  DECLARE oldReservedSeat INT;
+
+  -- Lưu trữ giá trị cũ của NumberOfReservedSeat
+    SET oldReservedSeat = OLD.NumberOfReservedSeat;
+  IF NEW.LimitOfSeat >= NEW.NumberOfReservedSeat THEN    
+    -- Cập nhật NumberOfNoBookSeat nếu giới hạn hợp lệ
+    SET NEW.NumberOfNoBookSeat = NEW.LimitOfSeat - NEW.NumberOfReservedSeat;
+  ELSE
+    -- Nếu giới hạn không hợp lệ, giữ nguyên giá trị cũ của NumberOfReservedSeat
+    SET NEW.NumberOfReservedSeat = oldReservedSeat;
+  END IF;
+END;
+
+//
+DELIMITER ;
+
+
+-- TEST TRIGGER 1==============================================================================
+-- UPDATE trip
+-- SET NumberOfReservedSeat = 15
+-- WHERE TripID = 1;
+
+
+-- UPDATE trip
+-- SET NumberOfReservedSeat = 15
+-- WHERE TripID = 1;
+
+
+-- UPDATE trip
+-- SET NumberOfReservedSeat = 40
+-- WHERE TripID = 1;
+
+
+
+-- TRIGGER 2====================================================================================
+
+DELIMITER //
+
+CREATE TRIGGER updateTotalAmount BEFORE INSERT ON ticket
+FOR EACH ROW
+BEGIN
+  DECLARE route_cost DECIMAL(10, 2);
+
+  -- Lấy giá trị Cost từ bảng routestop
+  SELECT Cost INTO route_cost
+  FROM routestop
+  WHERE RouteStopID = NEW.RouteStopID AND RouteID = NEW.RouteID;
+
+  -- Nếu tìm thấy giá trị Cost, cập nhật TotalAmount trong bảng invoice
+  IF route_cost IS NOT NULL THEN
+    UPDATE invoice
+    SET TotalAmount = TotalAmount + route_cost
+    WHERE InvoiceID = NEW.InvoiceID;
+  END IF;
+END;
+
+//
+DELIMITER ;
+
+-- TEST TRIGGER 2 =======================================================================
+-- INSERT INTO `ticket` (SeatNumber, AccountID, InvoiceID, PassengerSSN, TripID, RouteStopID, RouteID) VALUES(1, 31, 1, 111111111, 1, 2, 1);
+-- INSERT INTO `ticket` (SeatNumber, AccountID, InvoiceID, PassengerSSN, TripID, RouteStopID, RouteID) VALUES(1, 32, 2, 222222222, 2, 4, 2);
+
+
+-- 2.3. THỦ TỤC =======================================================================
 -- Tạo thủ tục tìm kiếm chuyến đi
 DROP PROCEDURE IF EXISTS information_trip; -- Xóa procedure information_trip nếu tồn tại
 DELIMITER $$
@@ -843,74 +1071,3 @@ BEGIN
 END $$
 
 DELIMITER ;
-
-
--- TRIGGER 1===================================================================================
-
-DELIMITER //
-
-CREATE TRIGGER remainTicket BEFORE UPDATE ON trip
-FOR EACH ROW
-BEGIN
-  DECLARE oldReservedSeat INT;
-
-  -- Lưu trữ giá trị cũ của NumberOfReservedSeat
-    SET oldReservedSeat = OLD.NumberOfReservedSeat;
-  IF NEW.LimitOfSeat >= NEW.NumberOfReservedSeat THEN    
-    -- Cập nhật NumberOfNoBookSeat nếu giới hạn hợp lệ
-    SET NEW.NumberOfNoBookSeat = NEW.LimitOfSeat - NEW.NumberOfReservedSeat;
-  ELSE
-    -- Nếu giới hạn không hợp lệ, giữ nguyên giá trị cũ của NumberOfReservedSeat
-    SET NEW.NumberOfReservedSeat = oldReservedSeat;
-  END IF;
-END;
-
-//
-DELIMITER ;
-
-
--- TEST TRIGGER 1==============================================================================
--- UPDATE trip
--- SET NumberOfReservedSeat = 15
--- WHERE TripID = 1;
-
-
--- UPDATE trip
--- SET NumberOfReservedSeat = 15
--- WHERE TripID = 1;
-
-
--- UPDATE trip
--- SET NumberOfReservedSeat = 40
--- WHERE TripID = 1;
-
-
-
--- TRIGGER 2====================================================================================
-
-DELIMITER //
-
-CREATE TRIGGER updateTotalAmount BEFORE INSERT ON ticket
-FOR EACH ROW
-BEGIN
-  DECLARE route_cost DECIMAL(10, 2);
-
-  -- Lấy giá trị Cost từ bảng routestop
-  SELECT Cost INTO route_cost
-  FROM routestop
-  WHERE RouteStopID = NEW.RouteStopID AND RouteID = NEW.RouteID;
-
-  -- Nếu tìm thấy giá trị Cost, cập nhật TotalAmount trong bảng invoice
-  IF route_cost IS NOT NULL THEN
-    UPDATE invoice
-    SET TotalAmount = TotalAmount + route_cost
-    WHERE InvoiceID = NEW.InvoiceID;
-  END IF;
-END;
-
-//
-DELIMITER ;
-
--- TEST TRIGGER 2 =======================================================================
--- INSERT INTO `ticket` (SeatNumber, AccountID, InvoiceID, PassengerSSN, TripID, RouteStopID, RouteID) VALUES(1, 31, 1, 111111111, 1, 2, 1);
--- INSERT INTO `ticket` (SeatNumber, AccountID, InvoiceID, PassengerSSN, TripID, RouteStopID, RouteID) VALUES(1, 32, 2, 222222222, 2, 4, 2);
