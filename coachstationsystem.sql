@@ -1115,34 +1115,67 @@ CREATE FUNCTION CountCoaches(
 )
 RETURNS INT
 BEGIN
-    DECLARE total_coaches INT;
-
-    -- Kiểm tra ngày
-    IF start_date > end_date THEN
+    -- Kiểm tra option_value
+    IF option_value NOT IN ('Start Contract', 'End Contract') THEN
         SIGNAL SQLSTATE '45000'
-        SET MESSAGE_TEXT = 'Invalid @start_date and @end_date';
+        SET MESSAGE_TEXT = 'Please choose valid @option';
     END IF;
 
-    -- Đếm số lượng CoachID thỏa mãn điều kiện
-    SELECT COUNT(CoachID) INTO total_coaches
-    FROM coach
-    JOIN coachcompany ON coach.CoachCompanyID = coachcompany.CoachCompanyID
-    WHERE 
-        CASE
-            WHEN option_value = 'Start Contract' THEN
-                coachcompany.DateOfContractRegistration BETWEEN start_date AND end_date
-            WHEN option_value = 'End Contract' THEN
-                coachcompany.EndDateOfContract BETWEEN start_date AND end_date
-        END;
-    RETURN total_coaches;
+    SET @total_coaches = 0;
+
+    IF start_date IS NULL THEN 
+        IF end_date IS NULL THEN 
+            SELECT Count(CoachID) INTO @total_coaches
+            FROM coach 
+            JOIN coachcompany ON coach.CoachCompanyID = coachcompany.CoachCompanyID;
+        ELSE 
+            SELECT Count(CoachID) INTO @total_coaches
+            FROM coach 
+            JOIN coachcompany ON coach.CoachCompanyID = coachcompany.CoachCompanyId
+            WHERE 
+                CASE
+                    WHEN option_value = 'Start Contract' THEN
+                        coachcompany.DateOfContractRegistration <= end_date
+                    WHEN option_value = 'End Contract' THEN
+                        coachcompany.EndDateOfContract <= end_date
+                END;
+        END IF;
+    ELSE 
+        IF end_date IS NULL THEN 
+            SELECT Count(CoachID) INTO @total_coaches
+            FROM coach 
+            JOIN coachcompany ON coach.CoachCompanyID = coachcompany.CoachCompanyID
+            WHERE 
+                CASE
+                    WHEN option_value = 'Start Contract' THEN
+                        coachcompany.DateOfContractRegistration >= start_date
+                    WHEN option_value = 'End Contract' THEN
+                        coachcompany.EndDateOfContract >= start_date
+                END;
+        ELSE 
+            SELECT COUNT(CoachID) INTO @total_coaches
+            FROM coach
+            JOIN coachcompany ON coach.CoachCompanyID = coachcompany.CoachCompanyID
+            WHERE 
+                CASE
+                    WHEN option_value = 'Start Contract' THEN
+                        coachcompany.DateOfContractRegistration BETWEEN start_date AND end_date
+                    WHEN option_value = 'End Contract' THEN
+                        coachcompany.EndDateOfContract BETWEEN start_date AND end_date
+                END;
+        END IF;
+    END IF;
+
+    RETURN @total_coaches;
 END //
 
 DELIMITER ;
 
 -- TEST HÀM 1 -----------------------------------------------------------------
--- SELECT CountCoaches("2023-01-01", "2023-12-31", "Start Contract") AS TotalCoaches; => 8
--- SELECT CountCoaches("2023-01-01", "2024-12-31", "End Contract") AS TotalCoaches; => 2
--- SELECT CountCoaches("2025-01-01", "2024-12-31", "End Contract") AS TotalCoaches; => Error
+-- SELECT CountCoaches("2023-01-01", "2023-12-31", "Start Contract") AS TotalCoaches;
+-- SELECT CountCoaches("2023-07-01", NULL, "End Contract") AS TotalCoaches;
+-- SELECT CountCoaches(NULL, NULL, "End Contract") AS TotalCoaches;
+-- SELECT CountCoaches(NULL, "2023-07-01", "Start Contract") AS TotalCoaches;
 
 -- ========================================================================================
 -- HÀM 2: Tính tổng doanh thu từ bán vé của 1 nhà xe trong 1 khoảng thời gian.
@@ -1158,23 +1191,47 @@ CREATE FUNCTION TotalIncomes(
 RETURNS DECIMAL(10, 2)
 BEGIN
     DECLARE total DECIMAL(10, 2);
-
-    -- Kiểm tra ngày
-    IF start_date > end_date THEN
-        SIGNAL SQLSTATE '45000'
-        SET MESSAGE_TEXT = 'Invalid @start_date and @end_date';
+    
+    IF start_date IS NULL THEN 
+        IF end_date IS NULL THEN 
+            SELECT SUM(rt.Cost)
+            INTO total
+            FROM ticket t
+            JOIN routestop rt ON t.RouteStopID = rt.RouteStopID
+            JOIN trip tr ON t.TripID = tr.TripID
+            JOIN coach co ON tr.CoachID = co.CoachID;
+        ELSE 
+            SELECT SUM(rt.Cost)
+            INTO total
+            FROM ticket t
+            JOIN routestop rt ON t.RouteStopID = rt.RouteStopID
+            JOIN trip tr ON t.TripID = tr.TripID
+            JOIN coach co ON tr.CoachID = co.CoachID
+            WHERE co.CoachCompanyID = coach_company_id
+                AND tr.Date_ <= end_date;
+        END IF;
+    ELSE 
+        IF end_date IS NULL THEN 
+            SELECT SUM(rt.Cost)
+            INTO total
+            FROM ticket t
+            JOIN routestop rt ON t.RouteStopID = rt.RouteStopID
+            JOIN trip tr ON t.TripID = tr.TripID
+            JOIN coach co ON tr.CoachID = co.CoachID
+            WHERE co.CoachCompanyID = coach_company_id
+                AND tr.Date_ >= start_date;
+        ELSE 
+            SELECT SUM(rt.Cost)
+            INTO total
+            FROM ticket t
+            JOIN routestop rt ON t.RouteStopID = rt.RouteStopID
+            JOIN trip tr ON t.TripID = tr.TripID
+            JOIN coach co ON tr.CoachID = co.CoachID
+            WHERE co.CoachCompanyID = coach_company_id
+                AND tr.Date_ BETWEEN start_date AND end_date;
+        END IF;
     END IF;
-
-    -- Tính tổng doanh thu
-    SELECT SUM(rt.Cost)
-    INTO total
-    FROM ticket t
-    JOIN routestop rt ON t.RouteStopID = rt.RouteStopID
-    JOIN trip tr ON t.TripID = tr.TripID
-    JOIN coach co ON tr.CoachID = co.CoachID
-    WHERE co.CoachCompanyID = coach_company_id
-        AND tr.Date_ BETWEEN start_date AND end_date;
-
+    
     IF total IS NULL THEN
         SET total = 0.00;
     END IF;
@@ -1184,6 +1241,9 @@ END //
 
 DELIMITER ;
 
+
 -- TEST HÀM 2 -----------------------------------------------------------------
--- SELECT TotalIncomes(1, "2023-01-01", "2023-12-31") AS Incomes; => 200000
--- SELECT TotalIncomes(2, "2023-01-01", "2024-12-31") AS Incomes; => 180000
+-- SELECT TotalIncomes(1, "2023-01-01", "2023-12-31") AS Incomes;
+-- SELECT TotalIncomes(2, "2023-07-01", NULL) AS Incomes;
+-- SELECT TotalIncomes(7, NULL, NULL) AS Incomes;
+-- SELECT TotalIncomes(10, NULL, "2024-04-30") AS Incomes;
