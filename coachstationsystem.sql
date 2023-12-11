@@ -1121,6 +1121,11 @@ BEGIN
         SET MESSAGE_TEXT = 'Please choose valid @option';
     END IF;
 
+    IF start_date > end_date THEN
+        SIGNAL SQLSTATE '45000'
+        SET MESSAGE_TEXT = 'Invalid @start_date and @end_date';
+    END IF;
+
     SET @total_coaches = 0;
 
     IF start_date IS NULL THEN 
@@ -1191,6 +1196,16 @@ CREATE FUNCTION TotalIncomes(
 RETURNS DECIMAL(10, 2)
 BEGIN
     DECLARE total DECIMAL(10, 2);
+
+    IF start_date > end_date THEN
+        SIGNAL SQLSTATE '45000'
+        SET MESSAGE_TEXT = 'Invalid @start_date and @end_date';
+    END IF;
+
+    IF NOT EXISTS (SELECT 1 FROM coachcompany WHERE CoachCompanyID = coach_company_id) THEN
+        SIGNAL SQLSTATE '45000'
+        SET MESSAGE_TEXT = 'Invalid Coach Company ID';
+    END IF;
     
     IF start_date IS NULL THEN 
         IF end_date IS NULL THEN 
