@@ -199,7 +199,7 @@ CREATE TABLE `coachcompany` (
   `DateOfContractRegistration` date DEFAULT NULL,
   `EndDateOfContract` date DEFAULT NULL,
   `CoachCompanyName` varchar(255) DEFAULT NULL,
-  `Status` varchar(255) DEFAULT NULL CHECK (`Status` in ('Action','Not Action')),
+  `Status` varchar(255) DEFAULT NULL CHECK (`Status` in ('Active','Not Active')),
   PRIMARY KEY (`CoachCompanyID`)
 ) ENGINE=InnoDB AUTO_INCREMENT=12 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
@@ -210,7 +210,7 @@ CREATE TABLE `coachcompany` (
 
 LOCK TABLES `coachcompany` WRITE;
 /*!40000 ALTER TABLE `coachcompany` DISABLE KEYS */;
-INSERT INTO `coachcompany` VALUES (1,'2022-01-01','2026-12-31','Phương Trang','Action'),(2,'2022-02-01','2024-11-30','Hoàng Long','Action'),(3,'2022-03-01','2022-10-31','Mai Linh','Not Action'),(4,'2022-04-01','2025-09-30','Thành Bưởi','Action'),(5,'2022-05-01','2022-08-31','Minh Thành Phát','Not Action'),(6,'2022-11-18','2025-11-18','Văn Minh','Action'),(7,'2023-01-01','2026-01-01','Kumho Samco','Action'),(8,'2023-12-24','2025-12-24','Kim Hoàng','Action'),(9,'2023-11-12','2025-11-12','Tuấn Hưng','Action'),(10,'2023-08-09','2025-08-09','Hùng Cường','Action'),(11,'2024-01-01','2026-01-01','Hoàng Nga','Action');
+INSERT INTO `coachcompany` VALUES (1,'2022-01-01','2026-12-31','Phương Trang','Active'),(2,'2022-02-01','2024-11-30','Hoàng Long','Active'),(3,'2022-03-01','2022-10-31','Mai Linh','Not Active'),(4,'2022-04-01','2025-09-30','Thành Bưởi','Active'),(5,'2022-05-01','2022-08-31','Minh Thành Phát','Not Active'),(6,'2022-11-18','2025-11-18','Văn Minh','Active'),(7,'2023-01-01','2026-01-01','Kumho Samco','Active'),(8,'2023-12-24','2025-12-24','Kim Hoàng','Active'),(9,'2023-11-12','2025-11-12','Tuấn Hưng','Active'),(10,'2023-08-09','2025-08-09','Hùng Cường','Active'),(11,'2024-01-01','2026-01-01','Hoàng Nga','Active');
 /*!40000 ALTER TABLE `coachcompany` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -412,7 +412,7 @@ CREATE TABLE `invoice` (
 
 LOCK TABLES `invoice` WRITE;
 /*!40000 ALTER TABLE `invoice` DISABLE KEYS */;
-INSERT INTO `invoice`(InvoiceID, TaxCode, AccountID, PassengerSSN, Date, Time) VALUES (1,'ABC123',31,'000000000','2023-01-01','10:30:00'),(2,'XYZ456',32,'111111111','2023-02-15','12:45:00'),(3,'123DEF',33,'222222222','2023-03-20','15:00:00'),(4,'456GHI',34,'333333333','2023-04-10','14:30:00'),(5,'789JKL',35,'444444444','2023-05-25','11:00:00'),(6,'123FEE',36,'555555555','2023-06-20','15:11:00'),(7,'245WEF',37,'666666666','2023-07-20','17:28:00'),(8,'332KTO',38,'777777777','2023-08-20','19:30:00'),(9,'947JRK',39,'888888888','2023-09-20','08:13:00'),(10,'2213IE',40,'999999999','2023-10-20','09:22:00');
+INSERT INTO `invoice`(InvoiceID, TaxCode, AccountID, PassengerSSN, Date, Time, TotalAmount) VALUES (1,'ABC123',31,'000000000','2023-01-01','10:30:00', 50000),(2,'XYZ456',32,'111111111','2023-02-15','12:45:00', 70000),(3,'123DEF',33,'222222222','2023-03-20','15:00:00', 80000),(4,'456GHI',34,'333333333','2023-04-10','14:30:00', 100000),(5,'789JKL',35,'444444444','2023-05-25','11:00:00', 90000),(6,'123FEE',36,'555555555','2023-06-20','15:11:00', 60000),(7,'245WEF',37,'666666666','2023-07-20','17:28:00', 100000),(8,'332KTO',38,'777777777','2023-08-20','19:30:00', 95000),(9,'947JRK',39,'888888888','2023-09-20','08:13:00', 120000),(10,'2213IE',40,'999999999','2023-10-20','09:22:00', 110000);
 /*!40000 ALTER TABLE `invoice` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -708,8 +708,33 @@ CREATE TABLE `ticket` (
 
 LOCK TABLES `ticket` WRITE;
 /*!40000 ALTER TABLE `ticket` DISABLE KEYS */;
-INSERT INTO `ticket` VALUES (1,10,31,1,'111111111',1,1,1),(2,15,32,2,'222222222',2,2,1),(3,20,33,3,'333333333',3,3,2),(4,12,34,4,'444444444',4,4,2),(5,18,35,5,'555555555',5,5,3),(6,11,36,6,'666666666',6,6,3),(7,13,37,7,'777777777',7,7,4),(8,19,38,8,'888888888',8,8,4),(9,20,39,9,'999999999',9,9,5),(10,21,40,10,'000000000',10,10,5),(11,NULL,41,11,'123412345',11,11,8),(12,NULL,42,12,'234523456',12,12,9),(13,NULL,43,13,'456745678',13,13,10),(14,NULL,44,14,'567856789',14,14,11),(15,NULL,45,15,'678967890',15,15,12),(16,NULL,46,16,'135724680',16,16,13),(17,NULL,47,17,'090807060',17,17,14),(18,NULL,48,18,'010203040',18,18,15),(19,NULL,49,19,'050607080',19,19,16),(20,NULL,50,20,'020103040',20,20,17),(21,NULL,51,21,'001100223',21,21,18),(22,NULL,52,22,'003334445',22,22,19),(23,NULL,53,23,'010101022',23,23,20),(24,NULL,54,24,'020202033',24,24,21),(25,NULL,55,25,'055522211',1,25,22);
+INSERT INTO `ticket` (`TicketID`, `SeatNumber`, `AccountID`, `InvoiceID`, `PassengerSSN`, `TripID`, `RouteStopID`, `RouteID`) VALUES
+(1, 10, 31, 1, '111111111', 1, 1, 1),
+(2, 15, 32, 2, '222222222', 1, 2, 1),
+(3, 20, 33, 3, '333333333', 2, 3, 2),
+(4, 12, 34, 4, '444444444', 2, 4, 2),
+(5, 18, 35, 5, '555555555', 3, 5, 3),
+(6, 11, 36, 6, '666666666', 3, 6, 3),
+(7, 13, 37, 7, '777777777', 4, 7, 4),
+(8, 19, 38, 8, '888888888', 4, 8, 4),
+(9, 20, 39, 9, '999999999', 5, 9, 5),
+(10, 21, 40, 10, '000000000', 5, 10, 5),
+(11, 3, 41, 11, '123412345', 8, 11, 8),
+(12, 4, 42, 12, '234523456', 9, 11, 8),
+(13, 5, 43, 13, '456745678', 10, 11, 8),
+(14, 6, 44, 14, '567856789', 11, 14, 11),
+(15, 7, 45, 15, '678967890', 12, 15, 12),
+(17, 8, 47, 17, '090807060', 14, 17, 14),
+(18, 2, 48, 18, '010203040', 15, 18, 15),
+(19, 3, 49, 19, '050607080', 16, 18, 15),
+(20, 4, 50, 20, '020103040', 15, 18, 15),
+(21, 5, 51, 21, '001100223', 18, 18, 15),
+(22, 6, 52, 22, '003334445', 19, 22, 19),
+(23, 7, 53, 23, '010101022', 20, 23, 20),
+(24, 8, 54, 24, '020202033', 21, 24, 21),
+(25, 9, 55, 25, '055522211', 22, 25, 22);
 /*!40000 ALTER TABLE `ticket` ENABLE KEYS */;
+
 UNLOCK TABLES;
 
 --
@@ -723,7 +748,7 @@ CREATE TABLE `trip` (
   `TripID` int(11) NOT NULL AUTO_INCREMENT,
   `LimitOfSeat` int(11) DEFAULT NULL,
   `NumberOfReservedSeat` int(11) DEFAULT 0,
-  `NumberOfNoBookSeat` int(11) DEFAULT NULL,
+  `NumberOfNoBookSeat` int(11) DEFAULT 0,
   `CoachID` int(11) DEFAULT NULL,
   `RouteID` int(11) DEFAULT NULL,
   `DriverID` int(11) DEFAULT NULL,
@@ -768,10 +793,35 @@ CREATE PROCEDURE insert_coachcompany
 	(IN p_docg DATE,
     IN p_edoc DATE,
     IN p_ccname VARCHAR(255),
-    IN p_status VARCHAR(255) )
+    IN p_status VARCHAR(255))
 BEGIN
+
+  if p_docg IS NULL || p_docg = '' then
+    set @r = 'Vui lòng nhập ngày đăng ký hợp đồng.';
+    signal sqlstate '45001' set message_text = @r;
+  end if;
+
+  if p_edoc IS NULL || p_edoc = '' then
+    set @r = 'Vui lòng nhập ngày hết hạn hợp đồng.';
+    signal sqlstate '45001' set message_text = @r;
+  end if;
+
+  if p_ccname IS NULL || p_ccname = '' then
+    set @r = 'Vui lòng nhập tên công ty.';
+    signal sqlstate '45001' set message_text = @r;
+  end if;
+
+  if p_status IS NULL || p_status = '' then
+    set @r = 'Vui lòng nhập id.';
+    signal sqlstate '45001' set message_text = @r;
+  end if;
+
+  if current_date() > p_edoc then
+	set @r = 'Ngày hết hạn không hợp lệ';
+   signal sqlstate '45001' set message_text = @r;
+   end if;
 	-- -----
-   if p_docg > current_date() then 
+  if p_docg > p_edoc then 
 	set @r = 'Ngày đăng ký không hợp lệ';
    signal sqlstate '45001' set message_text = @r;
    end if;
@@ -781,73 +831,113 @@ BEGIN
    signal sqlstate '45001' set message_text = @raiserror;
    end if;
    -- -----
-   if p_status != 'Action' or p_status != 'Not Action' then 
+  if p_status != 'Active' and p_status != 'Not Active' then 
    set @ra = 'Status không hợp lê';
    signal sqlstate '45001' set message_text = @ra;
    end if;
-   INSERT INTO coachcompany (DateOfContractRegistration, EndDateOfContract, CoachCompanyName, Status)
-   VALUES (p_docg, p_edoc, p_ccname,p_status);
+   
+  INSERT INTO coachcompany (DateOfContractRegistration, EndDateOfContract, CoachCompanyName, Status)
+  VALUES (p_docg, p_edoc, p_ccname,p_status);
    COMMIT;
 END $$
 DELIMITER ;
 
--- CALL insert_coachcompany ("2020-11-18", "2022-11-18", "Trọng Khôi", "Action"); 
+-- CALL insert_coachcompany ("2020-11-18", "2022-11-18", "Trọng Khôi", "Active"); 
 
 -- TẠO THỦ TỤC UPDATE-------------------------------------
 DROP PROCEDURE IF EXISTS update_coachcompany; 
 DELIMITER $$
 CREATE PROCEDURE update_coachcompany
-	(IN p_ccid INT ,
+	(IN p_ccid INT,
     IN p_docg DATE,
     IN p_edoc DATE,
     IN p_ccname VARCHAR(255),
-    IN p_status VARCHAR(255) )
+    IN p_status VARCHAR(255))
 BEGIN
 	declare count int ;
-    SELECT COUNT(*) INTO count
-	FROM coachcompany
-	WHERE CoachCompanyID = p_ccid;
-	if p_docg > current_date() then 
-	set @a = 'Ngày đăng ký không hợp lệ';
-   signal sqlstate '45001' set message_text = @a;
-   end if;
+  if p_ccid IS NULL || p_ccid = ''then
+    set @r = 'Vui lòng nhập id.';
+    signal sqlstate '45001' set message_text = @r;
+  end if;
+
+  if p_ccid NOT IN (SELECT CoachCompanyID FROM coachcompany) then
+    set @r = 'id không tồn tại.';
+    signal sqlstate '45001' set message_text = @r;
+  end if;
+
+  if p_docg IS NULL || p_docg = '' then
+    Select DateOfContractRegistration INTO p_docg FROM coachcompany Where CoachCompanyID = p_ccid;
+  end if;
+
+  if p_edoc IS NULL || p_edoc = '' then
+    Select EndDateOfContract INTO p_edoc FROM coachcompany Where CoachCompanyID = p_ccid;
+  end if;
+
+  if p_ccname IS NULL || p_ccname = '' then
+    Select CoachCompanyName INTO p_ccname FROM coachcompany Where CoachCompanyID = p_ccid;
+  end if;
+  
+  if p_status IS NULL || p_status = '' then
+    Select Status INTO p_status FROM coachcompany Where CoachCompanyID = p_ccid;
+  end if;
+  -- ---
+  if current_date() > p_edoc then
+	set @r = 'Ngày hết hạn không hợp lệ';
+  signal sqlstate '45001' set message_text = @r;
+  end if;
+  -- ---
+  if p_docg > p_edoc then 
+	set @r = 'Ngày đăng ký không hợp lệ';
+  signal sqlstate '45001' set message_text = @r;
+  end if;
    -- ---
 	if year(p_edoc) - year(p_docg) >  5 then 
-   set @b = 'Ngày hết hạn hợp đồng vượt quá 5 năm';
-   signal sqlstate '45001' set message_text = @b;
-   end if;
+  set @b = 'Ngày hết hạn hợp đồng vượt quá 5 năm';
+  signal sqlstate '45001' set message_text = @b;
+  end if;
    -- -----
-   if p_status != 'Action' and   p_status != 'Not Action'  then 
-   set @c = 'Status không hợp lê';
-   signal sqlstate '45001' set message_text = @c;
-   end if;
-   if count = 1 then
-    update coachcompany
-    set DateOfContractRegistration = p_docg,
-		CoachCompanyID = p_ccid,
-		EndDateOfContract = p_edoc,
-        CoachCompanyName = p_ccname,
-        Status = p_status 
+  if p_status != 'Active' and   p_status != 'Not Active'  then 
+  set @c = 'Status không hợp lê';
+  signal sqlstate '45001' set message_text = @c;
+  end if;
+   -- -----
+  update coachcompany
+  set DateOfContractRegistration = p_docg,
+	CoachCompanyID = p_ccid,
+	EndDateOfContract = p_edoc,
+  CoachCompanyName = p_ccname,
+  Status = p_status 
 	Where CoachCompanyID = p_ccid;
-    else 
-    set @d = 'Không tìm thấy id';
-    signal sqlstate '45001' set message_text = @d;
-    end if;
-    commit;
+
+  commit;
     
 END $$
 DELIMITER ;
--- call update_coachcompany("1","2022-01-01","2025-02-02","Hải Dưới","Not Action");
+-- call update_coachcompany("1","2022-01-01","2025-02-02","Hải Dưới","Not Active");
 
 -- TẠO THỦ TỤC DELETE-------------------------------------------
-DROP PROCEDURE IF EXISTS delete_emailpassanger; 
+DROP PROCEDURE IF EXISTS delete_coachcompany;
 DELIMITER $$
-CREATE PROCEDURE delete_emailpassanger
-	(IN p_ssnpass varchar(225)  )
+CREATE PROCEDURE delete_coachcompany
+    (IN p_ccid INT)
 BEGIN
-   DELETE FROM emailpassenger
-   WHERE PassengerSSN = p_ssnpass;
+  if p_ccid IS NULL || p_ccid = '' then
+    set @r = 'Vui lòng nhập id.';
+    signal sqlstate '45001' set message_text = @r;
+  end if;
+
+  if p_ccid NOT IN (SELECT CoachCompanyID FROM coachcompany) then
+    set @r = 'id không tồn tại.';
+    signal sqlstate '45001' set message_text = @r;
+  end if;
+
+  update coachcompany SET status = 'Not Active' Where CoachCompanyID = p_ccid;
+
+  COMMIT;
 END;
+$$
+DELIMITER ;
+
 -- call delete_emailpassanger("888888888");
     
 
@@ -954,13 +1044,13 @@ BEGIN
     );
     
     SELECT DISTINCT T.TripID, CoC.CoachCompanyName, C.CoachType, T.Time_,T.Date_, RM.Cost, (T.LimitOfSeat - T.NumberOfReservedSeat) AS RemainingNoTicket
-    FROM CoachCompany CoC
-    INNER JOIN Coach C ON CoC.CoachCompanyID = C.CoachCompanyID
-    INNER JOIN Trip T ON C.CoachID = T.CoachID
+    FROM coachcompany CoC
+    INNER JOIN coach C ON CoC.CoachCompanyID = C.CoachCompanyID
+    INNER JOIN trip T ON C.CoachID = T.CoachID
     INNER JOIN route_matching RM ON T.RouteID = RM.RouteID
     WHERE T.LimitOfSeat > T.NumberOfReservedSeat
-        AND (company_name ='' OR CoC.CoachCompanyName = company_name)
-        AND (coach_type ='' OR C.CoachType = coach_type)
+        AND (company_name ='' OR company_name = NULL OR CoC.CoachCompanyName = company_name)
+        AND (coach_type ='' OR coach_type = NULL OR C.CoachType = coach_type)
         AND T.Date_ >= start_date AND T.Date_ <= end_date
         AND (
             T.Date_ > start_date AND T.Date_< end_date
