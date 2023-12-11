@@ -965,7 +965,7 @@ END;
 //
 DELIMITER ;
 
-
+ 
 -- TEST TRIGGER 1==============================================================================
 -- UPDATE trip
 -- SET NumberOfReservedSeat = 15
@@ -973,7 +973,7 @@ DELIMITER ;
 
 
 -- UPDATE trip
--- SET NumberOfReservedSeat = 15
+-- SET NumberOfReservedSeat = 51
 -- WHERE TripID = 1;
 
 
@@ -987,21 +987,23 @@ DELIMITER ;
 
 DELIMITER //
 
-CREATE TRIGGER updateTotalAmount BEFORE INSERT ON ticket
+CREATE TRIGGER updateTotalAmount BEFORE UPDATE ON ticket
 FOR EACH ROW
 BEGIN
   DECLARE route_cost DECIMAL(10, 2);
 
-  -- Lấy giá trị Cost từ bảng routestop
-  SELECT Cost INTO route_cost
-  FROM routestop
-  WHERE RouteStopID = NEW.RouteStopID AND RouteID = NEW.RouteID;
+  if OLD.InvoiceID IS NULL and NEW.InvoiceID IS NOT NULL then
+    -- Lấy giá trị Cost từ bảng routestop
+    SELECT Cost INTO route_cost
+    FROM routestop
+    WHERE RouteStopID = NEW.RouteStopID AND RouteID = NEW.RouteID;
 
-  -- Nếu tìm thấy giá trị Cost, cập nhật TotalAmount trong bảng invoice
-  IF route_cost IS NOT NULL THEN
-    UPDATE invoice
-    SET TotalAmount = TotalAmount + route_cost
-    WHERE InvoiceID = NEW.InvoiceID;
+    -- Nếu tìm thấy giá trị Cost, cập nhật TotalAmount trong bảng invoice
+    IF route_cost IS NOT NULL THEN
+      UPDATE invoice
+      SET TotalAmount = TotalAmount + route_cost
+      WHERE InvoiceID = NEW.InvoiceID;
+    END IF;
   END IF;
 END;
 
@@ -1181,5 +1183,5 @@ END //
 DELIMITER ;
 
 -- TEST HÀM 2 -----------------------------------------------------------------
--- SELECT TotalIncomes(1, "2023-01-01", "2023-12-31") AS Incomes; => 270000
--- SELECT TotalIncomes(2, "2023-01-01", "2024-12-31") AS Incomes; => 200000
+-- SELECT TotalIncomes(1, "2023-01-01", "2023-12-31") AS Incomes; => 200000
+-- SELECT TotalIncomes(2, "2023-01-01", "2024-12-31") AS Incomes; => 180000
