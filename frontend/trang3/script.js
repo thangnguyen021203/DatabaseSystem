@@ -27,7 +27,7 @@ function CalculateIncome() {
                 $("#result").empty();
                 $("#result").append(`Total Income: ${strdata.data[0]["totalIncome"]}`);
               } else {
-                $("#result").append(`Error: ${strdata.errors[0]}`);
+                alert(`${strdata.errors[0]}`);
               }
         }
     });

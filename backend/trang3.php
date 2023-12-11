@@ -14,13 +14,14 @@
     if ($startDate == NULL) {
         if ($endDate == NULL) $query = "SELECT TotalIncomes($companyId, NULL, NULL) AS totalIncome";
         else $query = "SELECT TotalIncomes($companyId, NULL, '$endDate') AS totalIncome";
+        
     } else {
         if ($endDate == NULL) $query = "SELECT TotalIncomes($companyId, '$startDate', NULL) AS totalIncome";
         else $query = "SELECT TotalIncomes($companyId, '$startDate', '$endDate') AS totalIncome";
     }
     
     $result = $conn->query($query);
-
+    
     // Xử lý kết quả và trả về cho frontend
     if ($result) {
         $coachtype = array();
@@ -31,11 +32,8 @@
         $success= array('success' => True, 'data' => $coachtype);
         echo json_encode($success);
     } else {
-        $errorResult = $conn->query("SELECT @error AS error");
-        $errorRow = $errorResult->fetch_assoc();
-        $errorMessage = $errorRow['error'];
-
-        $errors = array('success' => false, 'errors' => array("Error: " . $errorMessage));
+        $errors = array('success' => false, 'errors' => array("Error: " . mysqli_error($conn)));
         echo json_encode($errors);
+
     }
 ?>
