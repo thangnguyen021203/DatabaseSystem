@@ -1053,8 +1053,8 @@ BEGIN
     INNER JOIN trip T ON C.CoachID = T.CoachID
     INNER JOIN route_matching RM ON T.RouteID = RM.RouteID
     WHERE T.LimitOfSeat > T.NumberOfReservedSeat
-        AND (company_name ='' OR company_name = NULL OR CoC.CoachCompanyName = company_name)
-        AND (coach_type ='' OR coach_type = NULL OR C.CoachType = coach_type)
+        AND (company_name ='' OR company_name IS NULL OR CoC.CoachCompanyName = company_name)
+        AND (coach_type ='' OR coach_type IS NULL OR C.CoachType = coach_type)
         AND T.Date_ >= start_date AND T.Date_ <= end_date
         AND (
             T.Date_ > start_date AND T.Date_< end_date
