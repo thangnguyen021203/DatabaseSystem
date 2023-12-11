@@ -1007,3 +1007,89 @@ BEGIN
 END $$
 
 DELIMITER ;
+
+-- 2.4. Hàm =============================================================================
+-- HÀM 1: Đếm số xe của tất cả các nhà xe kí hợp đồng/hết hạn hợp đồng với bến xe trong 1 khoảng thời gian.
+-- Xóa function CountCoaches nếu tồn tại
+DROP FUNCTION IF EXISTS CountCoaches; 
+DELIMITER //
+
+CREATE FUNCTION CountCoaches(
+    start_date DATE,
+    end_date DATE,
+    option_value ENUM('Start Contract', 'End Contract')
+)
+RETURNS INT
+BEGIN
+    DECLARE total_coaches INT;
+
+    -- Kiểm tra ngày
+    IF start_date > end_date THEN
+        SIGNAL SQLSTATE '45000'
+        SET MESSAGE_TEXT = 'Invalid @start_date and @end_date';
+    END IF;
+
+    -- Đếm số lượng CoachID thỏa mãn điều kiện
+    SELECT COUNT(CoachID) INTO total_coaches
+    FROM coach
+    JOIN coachcompany ON coach.CoachCompanyID = coachcompany.CoachCompanyID
+    WHERE 
+        CASE
+            WHEN option_value = 'Start Contract' THEN
+                coachcompany.DateOfContractRegistration BETWEEN start_date AND end_date
+            WHEN option_value = 'End Contract' THEN
+                coachcompany.EndDateOfContract BETWEEN start_date AND end_date
+        END;
+    RETURN total_coaches;
+END //
+
+DELIMITER ;
+
+-- TEST HÀM 1 -----------------------------------------------------------------
+-- SELECT CountCoaches("2023-01-01", "2023-12-31", "Start Contract") AS TotalCoaches; => 8
+-- SELECT CountCoaches("2023-01-01", "2024-12-31", "End Contract") AS TotalCoaches; => 2
+-- SELECT CountCoaches("2025-01-01", "2024-12-31", "End Contract") AS TotalCoaches; => Error
+
+-- ========================================================================================
+-- HÀM 2: Tính tổng doanh thu từ bán vé của 1 nhà xe trong 1 khoảng thời gian.
+-- Xóa function TotalIncomes nếu tồn tại
+DROP FUNCTION IF EXISTS TotalIncomes; 
+DELIMITER //
+
+CREATE FUNCTION TotalIncomes(
+    coach_company_id INT(11),
+    start_date DATE,
+    end_date DATE
+)
+RETURNS DECIMAL(10, 2)
+BEGIN
+    DECLARE total DECIMAL(10, 2);
+
+    -- Kiểm tra ngày
+    IF start_date > end_date THEN
+        SIGNAL SQLSTATE '45000'
+        SET MESSAGE_TEXT = 'Invalid @start_date and @end_date';
+    END IF;
+
+    -- Tính tổng doanh thu
+    SELECT SUM(rt.Cost)
+    INTO total
+    FROM ticket t
+    JOIN routestop rt ON t.RouteStopID = rt.RouteStopID
+    JOIN trip tr ON t.TripID = tr.TripID
+    JOIN coach co ON tr.CoachID = co.CoachID
+    WHERE co.CoachCompanyID = coach_company_id
+        AND tr.Date_ BETWEEN start_date AND end_date;
+
+    IF total IS NULL THEN
+        SET total = 0.00;
+    END IF;
+
+    RETURN total;
+END //
+
+DELIMITER ;
+
+-- TEST HÀM 2 -----------------------------------------------------------------
+-- SELECT TotalIncomes(1, "2023-01-01", "2023-12-31") AS Incomes; => 270000
+-- SELECT TotalIncomes(2, "2023-01-01", "2024-12-31") AS Incomes; => 200000
