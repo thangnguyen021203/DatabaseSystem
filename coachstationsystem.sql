@@ -814,7 +814,7 @@ BEGIN
   end if;
 
   if p_status IS NULL || p_status = '' then
-    set @r = 'Vui lòng nhập id.';
+    set @r = 'Status không hợp lệ.';
     signal sqlstate '45001' set message_text = @r;
   end if;
 
