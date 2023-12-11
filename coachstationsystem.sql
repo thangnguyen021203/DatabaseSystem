@@ -699,7 +699,7 @@ CREATE TABLE `ticket` (
   CONSTRAINT `ticket_ibfk_1` FOREIGN KEY (`TripID`) REFERENCES `trip` (`TripID`) ON DELETE CASCADE,
   CONSTRAINT `ticket_ibfk_2` FOREIGN KEY (`RouteStopID`) REFERENCES `routestop` (`RouteStopID`),
   CONSTRAINT `ticket_ibfk_3` FOREIGN KEY (`RouteID`) REFERENCES `route` (`RouteID`)
-) ENGINE=InnoDB AUTO_INCREMENT=26 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=28 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -732,7 +732,9 @@ INSERT INTO `ticket` (`TicketID`, `SeatNumber`, `AccountID`, `InvoiceID`, `Passe
 (22, 6, 52, 22, '003334445', 19, 22, 19),
 (23, 7, 53, 23, '010101022', 20, 23, 20),
 (24, 8, 54, 24, '020202033', 21, 24, 21),
-(25, 9, 55, 25, '055522211', 22, 25, 22);
+(25, 9, 55, 25, '055522211', 22, 25, 22),
+(26, 1, 31, NULL, NULL, 1, 2, 1),
+(27, 1, 32, NULL, NULL, 2, 4, 2);
 /*!40000 ALTER TABLE `ticket` ENABLE KEYS */;
 
 UNLOCK TABLES;
