@@ -7,15 +7,21 @@
     $conn = $database->getConnection();
 
     $companyId = $_POST['CompanyId'];
-    $startDate = $_POST['dateStart'];
-    $endDate = $_POST['dateEnd'];
-
-    // echo "Company ID: $companyId, Start Date: $startDate, End Date: $endDate"; // Debug line
+    $startDate = isset($_POST['dateStart']) ? $_POST['dateStart'] : NULL;
+    $endDate = isset($_POST['dateEnd']) ? $_POST['dateEnd'] : NULL;
 
     // Gọi hàm SQL
-    $query = "SELECT TotalIncomes($companyId, '$startDate', '$endDate') AS totalIncome";
+    if ($startDate == NULL) {
+        if ($endDate == NULL) $query = "SELECT TotalIncomes($companyId, NULL, NULL) AS totalIncome";
+        else $query = "SELECT TotalIncomes($companyId, NULL, '$endDate') AS totalIncome";
+        
+    } else {
+        if ($endDate == NULL) $query = "SELECT TotalIncomes($companyId, '$startDate', NULL) AS totalIncome";
+        else $query = "SELECT TotalIncomes($companyId, '$startDate', '$endDate') AS totalIncome";
+    }
+    
     $result = $conn->query($query);
-
+    
     // Xử lý kết quả và trả về cho frontend
     if ($result) {
         $coachtype = array();
@@ -26,7 +32,7 @@
         $success= array('success' => True, 'data' => $coachtype);
         echo json_encode($success);
     } else {
-        $errors = array('success' => false, 'errors' => array("Error: " . $query . "<br>" . mysqli_error($conn)));
+        $errors = array('success' => false, 'errors' => array("Error: " . mysqli_error($conn)));
         echo json_encode($errors);
 
     }
