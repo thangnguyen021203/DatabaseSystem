@@ -814,7 +814,7 @@ BEGIN
   end if;
 
   if p_status IS NULL || p_status = '' then
-    set @r = 'Status không hợp lệ.';
+    set @r = 'Vui lòng nhập Status.';
     signal sqlstate '45001' set message_text = @r;
   end if;
 
@@ -1013,8 +1013,13 @@ END;
 DELIMITER ;
 
 -- TEST TRIGGER 2 =======================================================================
--- INSERT INTO `ticket` (SeatNumber, AccountID, InvoiceID, PassengerSSN, TripID, RouteStopID, RouteID) VALUES(1, 31, 1, 111111111, 1, 2, 1);
--- INSERT INTO `ticket` (SeatNumber, AccountID, InvoiceID, PassengerSSN, TripID, RouteStopID, RouteID) VALUES(1, 32, 2, 222222222, 2, 4, 2);
+-- UPDATE trip
+-- SET NumberOfReservedSeat = 15
+-- WHERE TripID = 1;
+
+-- UPDATE trip
+-- SET NumberOfReservedSeat = 51
+-- WHERE TripID = 1;
 
 
 -- 2.3. THỦ TỤC =======================================================================
